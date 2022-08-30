@@ -13,7 +13,8 @@ Imports:
     ape,
     mcmc,
     PCMBase,
-    PCMBaseCpp
+    PCMBaseCpp,
+    Rcpp
 Depends: 
     R (>= 2.10)
 LazyData: true
