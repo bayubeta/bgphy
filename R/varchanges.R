@@ -1,9 +1,12 @@
 # change of variable methods for constrained parameters
+
+#' @export
 varchange <- function(f, ...){
   UseMethod("varchange")
 }
 
 # bounded under (a,b)
+#' @export
 varchange.prior <- function(f){
   # retrieve bounds
   bounds <- attr(f, "bounds")
@@ -65,7 +68,7 @@ varchange.prior <- function(f){
 
 
 
-
+#' @export
 trfunc <- function(priors_tr){
   # function that returns a function
   # to transform a parameter to/from the unbounded space
@@ -158,7 +161,7 @@ trfunc <- function(priors_tr){
 
 # transformation functions for the data
 # X to Y = f(X) or Y to X = f(Y)
-
+#' @export
 f_lowup <- function(a, b){
   force(a)
   force(b)
@@ -167,6 +170,7 @@ f_lowup <- function(a, b){
   }
 }
 
+#' @export
 g_lowup <- function(a, b){
   force(a)
   force(b)
@@ -175,6 +179,7 @@ g_lowup <- function(a, b){
   }
 }
 
+#' @export
 f_low <- function(a){
   force(a)
   function(x){
@@ -182,6 +187,7 @@ f_low <- function(a){
   }
 }
 
+#' @export
 g_low <- function(a){
   force(a)
   function(y){
@@ -189,6 +195,7 @@ g_low <- function(a){
   }
 }
 
+#' @export
 f_up <- function(b){
   force(b)
   function(x){
@@ -196,6 +203,7 @@ f_up <- function(b){
   }
 }
 
+#' @export
 g_up <- function(b){
   force(b)
   function(y){

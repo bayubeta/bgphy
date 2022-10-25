@@ -1,35 +1,9 @@
-#' #' export
-#' set_priors <- function(model, ...){
-#'   UseMethod("set_priors")
-#' }
-#'
-#' #' export
-#' set_priors.PCM <- function(model){
-#'   # set priors for a PCM object
-#'
-#'   # number of traits (dimension)
-#'   k <- attr(model, "k")
-#'
-#'   # number of regimes
-#'   r <- length(attr(model, "r"))
-#'
-#'   # number of parameters
-#'   p <- attr(model, "p")
-#'
-#'   parnames <- PCMGetParamNames(model)
-#'
-#'   priors <- setNames(vector())
-#'
-#'   class(pars) <- "prior"
-#'   return(pars)
-#' }
-
-
 #' @export
 prior <- function(model, ...){
   UseMethod("prior")
 }
 
+#' @export
 prior.default <- function(model, ...){
 
   parnames <- PCMGetParamNames(model)
@@ -42,6 +16,7 @@ prior.default <- function(model, ...){
 
 #=================== pdfs of prior distributions ===================
 
+#' @export
 prior.uniform <- function(min = 0, max = 1){
   f <- function(x){
     stats::dunif(x, min = min, max = max, log = TRUE)
@@ -53,6 +28,7 @@ prior.uniform <- function(min = 0, max = 1){
   return(f)
 }
 
+#' @export
 prior.normal <- function(mean = 0, sd = 1){
   f <- function(x){
     stats::dnorm(x, mean = mean, sd = sd, log = TRUE)
@@ -64,7 +40,7 @@ prior.normal <- function(mean = 0, sd = 1){
   return(f)
 }
 
-
+#' @export
 prior.gamma <- function(shape, rate = 1, scale = 1/rate){
   f <- function(x){
     stats::dgamma(x, shape, rate = rate, log = TRUE)
@@ -78,6 +54,7 @@ prior.gamma <- function(shape, rate = 1, scale = 1/rate){
 }
 
 
+#' @export
 prior.halfnormal <- function(sigma){
   f <- function(x){
     extraDistr::dhnorm(x, sigma = sigma, log = TRUE)
@@ -90,6 +67,8 @@ prior.halfnormal <- function(sigma){
   return(f)
 }
 
+
+#' @export
 prior.halfcauchy <- function(sigma){
   f <- function(x){
     extraDistr::dhcauchy(x, sigma = sigma, log = TRUE)
@@ -107,11 +86,12 @@ prior.halfcauchy <- function(sigma){
 #=================== samplers of prior distributions ===================
 
 
-
+#' @export
 priorsampler <- function(prior){
   UseMethod("priorsampler")
 }
 
+#' @export
 priorsampler.normal <- function(f){
   pars <- attr(f, "params")
   g <- function(n){
@@ -124,6 +104,7 @@ priorsampler.normal <- function(f){
   return(g)
 }
 
+#' @export
 priorsampler.gamma <- function(f){
   pars <- attr(f, "params")
   g <- function(n){
@@ -136,6 +117,7 @@ priorsampler.gamma <- function(f){
   return(g)
 }
 
+#' @export
 priorsampler.halfnormal <- function(f){
   pars <- attr(f, "params")
   g <- function(n){
@@ -148,6 +130,7 @@ priorsampler.halfnormal <- function(f){
   return(g)
 }
 
+#' @export
 priorsampler.halfcauchy <- function(f){
   pars <- attr(f, "params")
   g <- function(n){
@@ -160,10 +143,13 @@ priorsampler.halfcauchy <- function(f){
 }
 
 
+#' @export
 prior_sampler <- function(model, ...){
   UseMethod("prior_sampler")
 }
 
+
+#' @export
 prior_sampler.prior <- function(priors){
   p_sampler <- lapply(priors, priorsampler)
   p <- length(p_sampler)

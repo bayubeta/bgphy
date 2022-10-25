@@ -12,10 +12,3 @@ NumericVector mcmcmove(NumericVector p, double sigma){
 
   return prop;
 }
-
-
-
-
-/*** R
-#mcmcmove(c(2,2,2,2), 0.01)
-*/

@@ -2,50 +2,8 @@
 
 # naive Monte Carlo integral approximation
 
-# likelihood given parameter values
-PCMloglik <- function(X, tree, model, p){
-  # model with parameters p
-  prop_model <- setParams(p, model)
-
-  # log likelihood calculation
-  loglik <- PCMBase::PCMLik(X, tree, prop_model, metaI = PCMInfoCpp)
-
-  return(loglik[1])
-}
-
-
 # marginal likelihood
-logMargLik <- function(X, tree, model, priors, nsamples){
-
-  # create g(theta), priors sampler
-  g <- lapply(priors, priorsampler)
-
-  # parameter names
-  names <- names(g)
-
-  # matrix of prior samples
-  P <- matrix(unlist(lapply(g, function(f){f(nsamples)})), nrow = nsamples)
-  colnames(P) <- names
-
-  op <- options(PCMBase.Raise.Lik.Errors = FALSE)
-  on.exit(options(op))
-
-
-
-  loglikP <- apply(P, 1,
-                    FUN = function(p){
-                      PCMloglik(X = X, tree = tree, model = model, p)
-                      })
-
-  # apply logsumexp
-  lmax <- max(loglikP)
-  loglikP_shifted <- loglikP - lmax
-  return(-log(nsamples) + lmax + log(sum(exp(loglikP_shifted))))
-}
-
-
-
-# marginal likelihood
+#' @export
 logMargLik <- function(X, tree, model, priors, nsamples){
 
   # create g(theta), priors sampler

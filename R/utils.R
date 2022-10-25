@@ -1,5 +1,6 @@
 ######################
 
+
 logit <- function(u){
   log(u/(1 - u))
 }
@@ -9,6 +10,46 @@ invlogit <- function(v){
 }
 
 
+#' @export
+loadParams <- function(o, p){
+  # load parameters into a PCM model
+  # similar functionality to PCMBase::PCMParamLoadOrStore, load = TRUE
+
+  # o: PCM object
+  # p: vector of parameters
+
+  r <- length(attr(o, "regimes")) # regimes
+  pos <- 1 # index position
+
+  if (r == 1){
+    # if only one regime
+    for (name in names(o)){
+      o[[name]][] <- p[pos]
+      pos = pos + 1
+    }
+  }
+  else{
+    # if there are multiple regimes
+    for (name in names(o)){
+      plength <- length(o[[name]])
+
+      if (plength == 1){
+        o[[name]][] <- p[pos]
+        pos = pos + 1
+      }
+      else{
+        for (i in 1:plength){
+          o[[name]][[i]][] <- p[pos]
+          pos = pos + 1
+        }
+      }
+    }
+  }
+  return(o)
+}
+
+
+#' @export
 PCMGetParamNames <- function(o){
   r <- length(attr(o, "regimes"))
 
@@ -16,7 +57,7 @@ PCMGetParamNames <- function(o){
     return(names(o)[1:4])
   }
   else{
-    parnames <- numeric(PCMBase::PCMParamCount(o))
+    parnames <- numeric(attr(o, "p"))
     parnames <- parnames[-length(parnames)]
 
     parnames[1] <- names(o)[1]
