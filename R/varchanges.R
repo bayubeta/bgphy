@@ -64,78 +64,6 @@ varchange.prior <- function(f){
 }
 
 
-# transform.posterior <- function(P, priors){
-#
-#   # get information about the bounds from priors
-#   # bound types
-#   btypes <- lapply(priors, attr, "btype")
-#   pbounds <- lapply(priors, attr, "bounds")
-#
-#
-#   parnames <- colnames(P)
-#
-#   for (i in 1:4){
-#     b_type <- btypes[[parnames[i]]]
-#     if (is.null(b_type)){
-#       next
-#     }
-#
-#     else if (b_type == "low"){
-#       a <- pbounds[[parnames[i]]][1]
-#       P[,i] <- exp(P[,i]) + a
-#     }
-#
-#     else if (b_type == "up"){
-#       b <- pbounds[[parnames[i]]][2]
-#       P[,i] <- b - exp(P[,i])
-#     }
-#
-#     else if (b_type == "lowup"){
-#       a <- pbounds[[parnames[i]]][1]
-#       b <- pbounds[[parnames[i]]][2]
-#       P[,i] <- a + (b-a)*invlogit(P[,i])
-#     }
-#   }
-#
-#   return(P)
-# }
-#
-#
-# transform.init <- function(init, priors){
-#
-#   # get information about the bounds from priors
-#   # bound types
-#   btypes <- lapply(priors, attr, "btype")
-#   pbounds <- lapply(priors, attr, "bounds")
-#
-#
-#   parnames <- c("X0", "H", "Theta", "Sigma_x")
-#
-#   for (i in 1:4){
-#     b_type <- btypes[[parnames[i]]]
-#     if (is.null(b_type)){
-#       next
-#     }
-#
-#     else if (b_type == "low"){
-#       a <- pbounds[[parnames[i]]][1]
-#       init[i] <- log(init[i] - a)
-#     }
-#
-#     else if (b_type == "up"){
-#       b <- pbounds[[parnames[i]]][2]
-#       init[i] <- log(b - init[i])
-#     }
-#
-#     else if (b_type == "lowup"){
-#       a <- pbounds[[parnames[i]]][1]
-#       b <- pbounds[[parnames[i]]][2]
-#       init[i] <- logit((init[i] - a) / (b - a))
-#     }
-#   }
-#
-#   return(init)
-# }
 
 
 trfunc <- function(priors_tr){
@@ -226,6 +154,10 @@ trfunc <- function(priors_tr){
 }
 
 
+
+
+# transformation functions for the data
+# X to Y = f(X) or Y to X = f(Y)
 
 f_lowup <- function(a, b){
   force(a)

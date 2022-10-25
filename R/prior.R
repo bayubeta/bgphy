@@ -25,7 +25,6 @@
 #' }
 
 
-
 #' @export
 prior <- function(model, ...){
   UseMethod("prior")
@@ -40,7 +39,8 @@ prior.default <- function(model, ...){
 }
 
 
-# uniform prior
+
+#=================== pdfs of prior distributions ===================
 
 prior.uniform <- function(min = 0, max = 1){
   f <- function(x){
@@ -97,10 +97,27 @@ prior.halfnormal <- function(sigma){
 
   class(f) <- c("halfnormal", "prior")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- setNames(c(sigma), c("sd"))
+  attr(f, "params") <- setNames(c(sigma), c("sigma"))
 
   return(f)
 }
+
+prior.halfcauchy <- function(sigma){
+  f <- function(x){
+    extraDistr::dhcauchy(x, sigma = sigma, log = TRUE)
+  }
+
+  class(f) <- c("halfcauchy", "prior")
+  attr(f, "bounds") <- c(0, Inf)
+  attr(f, "params") <- setNames(c(sigma), c("sigma"))
+
+  return(f)
+}
+
+
+
+#=================== samplers of prior distributions ===================
+
 
 
 priorsampler <- function(prior){
@@ -142,6 +159,18 @@ priorsampler.halfnormal <- function(f){
 
   return(g)
 }
+
+priorsampler.halfcauchy <- function(f){
+  pars <- attr(f, "params")
+  g <- function(n){
+    extraDistr::rhcauchy(n, sigma = pars)
+  }
+
+  attr(g, "params") <- attr(f, "params")
+  attr(g, "class") <- c("sampler", attr(f, "class"))
+  return(g)
+}
+
 
 prior_sampler <- function(model, ...){
   UseMethod("prior_sampler")

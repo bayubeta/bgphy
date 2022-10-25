@@ -12,20 +12,22 @@ rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE,
   P <- matrix(NA, ncol = d, nrow = nsteps)
   colnames(P) <- PCMGetParamNames(model)
 
-  ######
-  ######
+
+  ############
   # priors_tr: f_X to f_Y
   # tr: X to Y and vice versa
-  ######
-  ######
 
   # apply change of variables to priors into unbounded space
   priors_tr <- lapply(priors, varchange)
+  ############
 
+
+  ############
   # define tr, functions to transform parameters
   # tr$f: to unbounded
   # tr$g: from unbounded
   tr <- trfunc(priors_tr)
+  ############
 
   # convert initial values into unbounded space
   initial <- tr$f(initial)
@@ -49,7 +51,7 @@ rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE,
   # ==========================================================
 
 
-  # =========================== for checkpoints ==============
+  # =================== for checkpoints ======================
   if (ncheck){
     icheck <- round(nsteps / ncheck)
   }
