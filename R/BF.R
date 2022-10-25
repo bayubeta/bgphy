@@ -1,5 +1,6 @@
 
-priorsamplers <- lapply(priors, priorsampler)
+
+# naive Monte Carlo integral approximation
 
 # likelihood given parameter values
 PCMloglik <- function(X, tree, model, p){
@@ -79,27 +80,3 @@ logMargLik <- function(X, tree, model, priors, nsamples){
   return(-log(nsamples) + lmax + log(sum(exp(loglikv_shifted))))
 }
 
-
-
-
-set.seed(1234)
-lm1 <- logMargLik(X, tree, model, priors, 10000)
-lm2 <- logMargLik(X, tree2, model2, priors2, 10000)
-lm3 <- logMargLik(X, tree2, model3, priors3, 10000)
-LM <- c(lm1, lm2, lm3)
-save(LM, file = "LM.rda")
-
-
-lm1f <- logMargLik(Xf, tree, model, priors, 10000)
-lm2f <- logMargLik(Xf, tree2, model2, priors2, 10000)
-lm3f <- logMargLik(Xf, tree2, model3, priors3, 10000)
-LMf <- c(lm1f, lm2f, lm3f)
-save(LMf, file = "LMf.rda")
-
-LM[1]-LM[2]
-LM[1]-LM[3]
-LM[2]-LM[3]
-
-LMf[1]-LMf[2]
-LMf[1]-LMf[3]
-LMf[2]-LMf[3]
