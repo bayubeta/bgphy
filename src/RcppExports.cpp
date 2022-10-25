@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // mcmcmove
 NumericVector mcmcmove(NumericVector p, double sigma);
-RcppExport SEXP _bpcm_mcmcmove(SEXP pSEXP, SEXP sigmaSEXP) {
+RcppExport SEXP _bmgpm_mcmcmove(SEXP pSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,11 +24,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_bpcm_mcmcmove", (DL_FUNC) &_bpcm_mcmcmove, 2},
+    {"_bmgpm_mcmcmove", (DL_FUNC) &_bmgpm_mcmcmove, 2},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_bpcm(DllInfo *dll) {
+RcppExport void R_init_bmgpm(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

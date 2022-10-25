@@ -64,18 +64,6 @@ prior.normal <- function(mean = 0, sd = 1){
   return(f)
 }
 
-prior.invgamma <- function(shape, rate = 1, scale = 1/rate){
-  f <- function(x){
-    invgamma::dinvgamma(x, shape, rate = rate, scale = scale, log = TRUE)
-  }
-
-  class(f) <- c("invgamma", "prior")
-  attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
-
-  return(f)
-}
-
 
 prior.gamma <- function(shape, rate = 1, scale = 1/rate){
   f <- function(x){
