@@ -1,9 +1,9 @@
-Package: bpcm
-Title: What the Package Does (One Line, Title Case)
+Package: bmgpm
+Title: Bayesian Analysis of Mixed Gaussian Phylogenetic Models
 Version: 0.0.0.9000
 Authors@R: 
-    person("Bayu", "Brahmantio", , "bayu.brahmantio@liu.se", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Bayu", "Brahmantio", , "bayubrahmantio@gmail.com", role = c("aut", "cre"))
+Description: Bayesian inference of parameters of mixed Gaussian phylogenetic models with shifts under the GLInv sub-family.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
@@ -19,3 +19,4 @@ Imports:
 Depends: 
     R (>= 2.10)
 LazyData: true
+LinkingTo: Rcpp

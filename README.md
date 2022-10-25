@@ -1,2 +1,2 @@
-# bpcm
- Bayesian analyisis of PCM
+# bmgpm
+ Bayesian Analysis of Mixed Gaussian Phylogenetic Models

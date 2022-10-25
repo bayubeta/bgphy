@@ -1,38 +1,43 @@
-#' @export
-set_priors <- function(model, ...){
-  UseMethod("set_priors")
-}
+#' #' export
+#' set_priors <- function(model, ...){
+#'   UseMethod("set_priors")
+#' }
+#'
+#' #' export
+#' set_priors.PCM <- function(model){
+#'   # set priors for a PCM object
+#'
+#'   # number of traits (dimension)
+#'   k <- attr(model, "k")
+#'
+#'   # number of regimes
+#'   r <- length(attr(model, "r"))
+#'
+#'   # number of parameters
+#'   p <- attr(model, "p")
+#'
+#'   parnames <- PCMGetParamNames(model)
+#'
+#'   priors <- setNames(vector())
+#'
+#'   class(pars) <- "prior"
+#'   return(pars)
+#' }
+
+
 
 #' @export
-set_priors.PCM <- function(model){
-  # set priors for a PCM object
-
-  # number of traits (dimension)
-  k <- attr(model, "k")
-
-  # number of regimes
-  r <- length(attr(model, "r"))
-
-  # number of parameters
-  p <- attr(model, "p")
-
-
-  # 1-dimensional case
-  if (k == 1){
-    # if there is only a single (global) regime
-    if (r == 1){
-      # make a list whose elements mirror the model's parameters
-      pars <- sapply(names(model)[-p], function(x) NULL)
-      A <- 10
-      pars$X0 <- pars$Theta <- prior.uniform(min = -A, max = A)
-      pars$H <- pars$Sigma_x <- prior.uniform(min = 0, max = 2*A)
-    }
-  }
-
-  class(pars) <- "prior"
-  return(pars)
+prior <- function(model, ...){
+  UseMethod("prior")
 }
 
+prior.default <- function(model, ...){
+
+  parnames <- PCMGetParamNames(model)
+
+  structure(sapply(parnames, function(x) NULL), class = "prior")
+
+}
 
 
 # uniform prior
@@ -72,10 +77,81 @@ prior.invgamma <- function(shape, rate = 1, scale = 1/rate){
 }
 
 
+prior.gamma <- function(shape, rate = 1, scale = 1/rate){
+  f <- function(x){
+    stats::dgamma(x, shape, rate = rate, log = TRUE)
+  }
+
+  class(f) <- c("gamma", "prior")
+  attr(f, "bounds") <- c(0, Inf)
+  attr(f, "params") <- setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
+
+  return(f)
+}
 
 
+prior.halfnormal <- function(sigma){
+  f <- function(x){
+    extraDistr::dhnorm(x, sigma = sigma, log = TRUE)
+  }
+
+  class(f) <- c("halfnormal", "prior")
+  attr(f, "bounds") <- c(0, Inf)
+  attr(f, "params") <- setNames(c(sigma), c("sd"))
+
+  return(f)
+}
 
 
+priorsampler <- function(prior){
+  UseMethod("priorsampler")
+}
 
+priorsampler.normal <- function(f){
+  pars <- attr(f, "params")
+  g <- function(n){
+    stats::rnorm(n, mean = pars[1], sd = pars[2])
+  }
 
+  attr(g, "params") <- attr(f, "params")
+  class(g) <- c("sampler", attr(f, "class"))
+
+  return(g)
+}
+
+priorsampler.gamma <- function(f){
+  pars <- attr(f, "params")
+  g <- function(n){
+    stats::rgamma(n, shape = pars[1], rate = pars[2])
+  }
+
+  attr(g, "params") <- attr(f, "params")
+  attr(g, "class") <- c("sampler", attr(f, "class"))
+
+  return(g)
+}
+
+priorsampler.halfnormal <- function(f){
+  pars <- attr(f, "params")
+  g <- function(n){
+    extraDistr::rhnorm(n, sigma = pars)
+  }
+
+  attr(g, "params") <- attr(f, "params")
+  attr(g, "class") <- c("sampler", attr(f, "class"))
+
+  return(g)
+}
+
+prior_sampler <- function(model, ...){
+  UseMethod("prior_sampler")
+}
+
+prior_sampler.prior <- function(priors){
+  p_sampler <- lapply(priors, priorsampler)
+  p <- length(p_sampler)
+  function(n){
+    mapply(function(f,n){f(n)}, p_sampler, n)
+  }
+}
 

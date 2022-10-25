@@ -22,12 +22,12 @@ varchange.prior <- function(f){
 
       fy <- function(y){
         invlogit_y <- invlogit(y)
-        f(a + (b-a)*invlogit_y) + (b-a) + log(invlogit_y) + log(1- invlogit_y)
+        f(a + (b-a)*invlogit_y) + log(b-a) + log(invlogit_y) + log(1- invlogit_y)
       }
 
       attributes(fy) <- attributes(f)[-1]
       class(fy) <- c(class(f), "transformed")
-      attr(fy, "untransformed") <- attr(f, "srcref")
+      attr(fy, "btype") <- "lowup"
 
       return(fy)
     }
@@ -42,7 +42,7 @@ varchange.prior <- function(f){
 
       attributes(fy) <- attributes(f)[-1]
       class(fy) <- c(class(f), "transformed")
-      attr(fy, "untransformed") <- attr(f, "srcref")
+      attr(fy, "btype") <- "low"
 
       return(fy)
     }
@@ -56,7 +56,7 @@ varchange.prior <- function(f){
 
       attributes(fy) <- attributes(f)[-1]
       class(fy) <- c(class(f), "transformed")
-      attr(fy, "untransformed") <- attr(f, "srcref")
+      attr(fy, "btype") <- "up"
 
       return(fy)
     }
@@ -64,8 +64,212 @@ varchange.prior <- function(f){
 }
 
 
+# transform.posterior <- function(P, priors){
+#
+#   # get information about the bounds from priors
+#   # bound types
+#   btypes <- lapply(priors, attr, "btype")
+#   pbounds <- lapply(priors, attr, "bounds")
+#
+#
+#   parnames <- colnames(P)
+#
+#   for (i in 1:4){
+#     b_type <- btypes[[parnames[i]]]
+#     if (is.null(b_type)){
+#       next
+#     }
+#
+#     else if (b_type == "low"){
+#       a <- pbounds[[parnames[i]]][1]
+#       P[,i] <- exp(P[,i]) + a
+#     }
+#
+#     else if (b_type == "up"){
+#       b <- pbounds[[parnames[i]]][2]
+#       P[,i] <- b - exp(P[,i])
+#     }
+#
+#     else if (b_type == "lowup"){
+#       a <- pbounds[[parnames[i]]][1]
+#       b <- pbounds[[parnames[i]]][2]
+#       P[,i] <- a + (b-a)*invlogit(P[,i])
+#     }
+#   }
+#
+#   return(P)
+# }
+#
+#
+# transform.init <- function(init, priors){
+#
+#   # get information about the bounds from priors
+#   # bound types
+#   btypes <- lapply(priors, attr, "btype")
+#   pbounds <- lapply(priors, attr, "bounds")
+#
+#
+#   parnames <- c("X0", "H", "Theta", "Sigma_x")
+#
+#   for (i in 1:4){
+#     b_type <- btypes[[parnames[i]]]
+#     if (is.null(b_type)){
+#       next
+#     }
+#
+#     else if (b_type == "low"){
+#       a <- pbounds[[parnames[i]]][1]
+#       init[i] <- log(init[i] - a)
+#     }
+#
+#     else if (b_type == "up"){
+#       b <- pbounds[[parnames[i]]][2]
+#       init[i] <- log(b - init[i])
+#     }
+#
+#     else if (b_type == "lowup"){
+#       a <- pbounds[[parnames[i]]][1]
+#       b <- pbounds[[parnames[i]]][2]
+#       init[i] <- logit((init[i] - a) / (b - a))
+#     }
+#   }
+#
+#   return(init)
+# }
 
 
+trfunc <- function(priors_tr){
+  # function that returns a function
+  # to transform a parameter to/from the unbounded space
+  # using the information of supports from priors
+
+  # priors: priors_tr
+
+
+  # parameter names and order in the vector p
+  parnames <- names(priors_tr)
+
+  # number of parameters
+  npars <- length(parnames)
+
+  # get information about the bounds from priors
+  # bound types
+  btypes <- lapply(parnames, function(x){attr(priors_tr[[x]], "btype")})
+  pbounds <- lapply(parnames, function(x){attr(priors_tr[[x]], "bounds")})
+
+
+  # placeholder list for functions
+  # f: transform to unbounded
+  # g: transform from unbounded
+  f <- setNames(vector("list", npars), parnames)
+  g <- setNames(vector("list", npars), parnames)
+
+
+  for (i in 1:npars){
+    # assign transformation functions for different types of bounds
+    b_type <- btypes[[i]]
+
+    if (is.null(b_type)){
+      f[[i]] <- function(x){
+        return(x)
+      }
+
+      g[[i]] <- function(y){
+        return(y)
+      }
+    }
+
+    else if (b_type == "low"){
+      a <- pbounds[[i]][1]
+      force(a)
+
+      f[[i]] <- f_low(a)
+      g[[i]] <- g_low(a)
+    }
+
+    else if (b_type == "up"){
+      b <- pbounds[[i]][2]
+      force(b)
+
+      f[[i]] <- f_up(b)
+      g[[i]] <- g_up(b)
+    }
+
+    else if (b_type == "lowup"){
+      a <- pbounds[[i]][1]
+      b <- pbounds[[i]][2]
+
+      f[[i]] <- f_lowup(a, b)
+      g[[i]] <- g_lowup(a, b)
+    }
+  }
+
+
+  # combine transformation functions for each parameter into one
+  t <- list()
+
+  t$f <- function(p){
+    for (i in 1:npars){
+      p[i] <- f[[i]](p[i])
+    }
+    return(p)
+  }
+
+  t$g <- function(p){
+    for (i in 1:npars){
+      p[i] <- g[[i]](p[i])
+    }
+    return(p)
+  }
+
+  return(t)
+}
+
+
+
+f_lowup <- function(a, b){
+  force(a)
+  force(b)
+  function(x){
+    logit((x - a) / (b - a))
+  }
+}
+
+g_lowup <- function(a, b){
+  force(a)
+  force(b)
+  function(y){
+    a + (b-a)*invlogit(y)
+  }
+}
+
+f_low <- function(a){
+  force(a)
+  function(x){
+    log(x - a)
+  }
+}
+
+g_low <- function(a){
+  force(a)
+  function(y){
+    exp(y) + a
+  }
+}
+
+f_up <- function(b){
+  force(b)
+  function(x){
+    log(b - x)
+  }
+}
+
+g_up <- function(b){
+  force(b)
+  function(y){
+    b - exp(y)
+  }
+}
 
 
 

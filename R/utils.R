@@ -9,3 +9,39 @@ invlogit <- function(v){
 }
 
 
+PCMGetParamNames <- function(o){
+  r <- length(attr(o, "regimes"))
+
+  if (r == 1){
+    return(names(o)[1:4])
+  }
+  else{
+    parnames <- numeric(PCMBase::PCMParamCount(o))
+    parnames <- parnames[-length(parnames)]
+
+    parnames[1] <- names(o)[1]
+    filled <- 1
+
+    for (i in 1:r){
+      pnames <- sapply(names(o[[i+1]]), FUN = function(x){paste0(x, "_", i)})
+      parnames[(filled + 1):(filled + length(pnames))] <- pnames
+      filled <- filled + length(pnames)
+    }
+  }
+
+  return(parnames)
+}
+
+
+logsumexp <- function(logW){
+  # calculate the log of sum of W from logW data
+  # log(sum(W)) = log(W[1] + ... + W[N])
+  # = log(exp(logW[1]) + ... + exp(logW[N]))
+  max_logW <- max(logW)
+  logW_shifted <- logW - max_logW
+  log(sum(exp(logW_shifted))) + max_logW
+}
+
+
+
+
