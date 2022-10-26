@@ -1,18 +1,18 @@
 # change of variable methods for constrained parameters
 
 #' @export
-varchange <- function(f, ...){
+varchange <- function(prior){
   UseMethod("varchange")
 }
 
 # bounded under (a,b)
 #' @export
-varchange.prior <- function(f){
+varchange.prior <- function(prior){
   # retrieve bounds
-  bounds <- attr(f, "bounds")
+  bounds <- attr(prior, "bounds")
 
   if (is.null(bounds)){
-    return(f)
+    return(prior)
   }
 
   else{
@@ -25,11 +25,11 @@ varchange.prior <- function(f){
 
       fy <- function(y){
         invlogit_y <- invlogit(y)
-        f(a + (b-a)*invlogit_y) + log(b-a) + log(invlogit_y) + log(1- invlogit_y)
+        prior(a + (b-a)*invlogit_y) + log(b-a) + log(invlogit_y) + log(1- invlogit_y)
       }
 
-      attributes(fy) <- attributes(f)[-1]
-      class(fy) <- c(class(f), "transformed")
+      attributes(fy) <- attributes(prior)[-1]
+      class(fy) <- c(class(prior), "transformed")
       attr(fy, "btype") <- "lowup"
 
       return(fy)
@@ -40,11 +40,11 @@ varchange.prior <- function(f){
     else if (bound_type[1]){
       a <- bounds[1]
       fy <- function(y){
-        f(exp(y) + a) + y #log(f(exp(y) + a) * exp(y))
+        prior(exp(y) + a) + y #log(f(exp(y) + a) * exp(y))
       }
 
-      attributes(fy) <- attributes(f)[-1]
-      class(fy) <- c(class(f), "transformed")
+      attributes(fy) <- attributes(prior)[-1]
+      class(fy) <- c(class(prior), "transformed")
       attr(fy, "btype") <- "low"
 
       return(fy)
@@ -54,11 +54,11 @@ varchange.prior <- function(f){
     else{
       b <- bounds[2]
       fy <- function(y){
-        f(b - exp(y)) + y #log(f(exp(y) + a) * exp(y))
+        prior(b - exp(y)) + y #log(f(exp(y) + a) * exp(y))
       }
 
-      attributes(fy) <- attributes(f)[-1]
-      class(fy) <- c(class(f), "transformed")
+      attributes(fy) <- attributes(prior)[-1]
+      class(fy) <- c(class(prior), "transformed")
       attr(fy, "btype") <- "up"
 
       return(fy)
@@ -92,8 +92,8 @@ trfunc <- function(priors_tr){
   # placeholder list for functions
   # f: transform to unbounded
   # g: transform from unbounded
-  f <- setNames(vector("list", npars), parnames)
-  g <- setNames(vector("list", npars), parnames)
+  f <- stats::setNames(vector("list", npars), parnames)
+  g <- stats::setNames(vector("list", npars), parnames)
 
 
   for (i in 1:npars){
@@ -161,7 +161,6 @@ trfunc <- function(priors_tr){
 
 # transformation functions for the data
 # X to Y = f(X) or Y to X = f(Y)
-#' @export
 f_lowup <- function(a, b){
   force(a)
   force(b)
@@ -170,7 +169,7 @@ f_lowup <- function(a, b){
   }
 }
 
-#' @export
+
 g_lowup <- function(a, b){
   force(a)
   force(b)
@@ -179,7 +178,7 @@ g_lowup <- function(a, b){
   }
 }
 
-#' @export
+
 f_low <- function(a){
   force(a)
   function(x){
@@ -187,7 +186,7 @@ f_low <- function(a){
   }
 }
 
-#' @export
+
 g_low <- function(a){
   force(a)
   function(y){
@@ -195,7 +194,7 @@ g_low <- function(a){
   }
 }
 
-#' @export
+
 f_up <- function(b){
   force(b)
   function(x){
@@ -203,7 +202,7 @@ f_up <- function(b){
   }
 }
 
-#' @export
+
 g_up <- function(b){
   force(b)
   function(y){

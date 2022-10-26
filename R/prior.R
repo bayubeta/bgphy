@@ -17,7 +17,7 @@ prior.default <- function(model, ...){
 #=================== pdfs of prior distributions ===================
 
 #' @export
-prior.uniform <- function(min = 0, max = 1){
+prior_uniform <- function(min = 0, max = 1){
   f <- function(x){
     stats::dunif(x, min = min, max = max, log = TRUE)
   }
@@ -29,54 +29,54 @@ prior.uniform <- function(min = 0, max = 1){
 }
 
 #' @export
-prior.normal <- function(mean = 0, sd = 1){
+prior_normal <- function(mean = 0, sd = 1){
   f <- function(x){
     stats::dnorm(x, mean = mean, sd = sd, log = TRUE)
   }
 
   class(f) <- c("normal", "prior")
-  attr(f, "params") <- setNames(c(mean, sd), c("mean", "sd"))
+  attr(f, "params") <- stats::setNames(c(mean, sd), c("mean", "sd"))
 
   return(f)
 }
 
 #' @export
-prior.gamma <- function(shape, rate = 1, scale = 1/rate){
+prior_gamma <- function(shape, rate = 1, scale = 1/rate){
   f <- function(x){
     stats::dgamma(x, shape, rate = rate, log = TRUE)
   }
 
   class(f) <- c("gamma", "prior")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
+  attr(f, "params") <- stats::setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
 
   return(f)
 }
 
 
 #' @export
-prior.halfnormal <- function(sigma){
+prior_halfnormal <- function(sigma){
   f <- function(x){
     extraDistr::dhnorm(x, sigma = sigma, log = TRUE)
   }
 
   class(f) <- c("halfnormal", "prior")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- setNames(c(sigma), c("sigma"))
+  attr(f, "params") <- stats::setNames(c(sigma), c("sigma"))
 
   return(f)
 }
 
 
 #' @export
-prior.halfcauchy <- function(sigma){
+prior_halfcauchy <- function(sigma){
   f <- function(x){
     extraDistr::dhcauchy(x, sigma = sigma, log = TRUE)
   }
 
   class(f) <- c("halfcauchy", "prior")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- setNames(c(sigma), c("sigma"))
+  attr(f, "params") <- stats::setNames(c(sigma), c("sigma"))
 
   return(f)
 }
@@ -91,60 +91,74 @@ priorsampler <- function(prior){
   UseMethod("priorsampler")
 }
 
+
+priorsampler.uniform <- function(prior){
+  pars <- attr(prior, "bounds")
+  g <- function(n){
+    log(stats::runif(n, min = pars[1], max = pars[2]))
+  }
+
+  attr(g, "params") <- attr(prior, "bounds")
+  class(g) <- c("sampler", attr(prior, "class"))
+
+  return(g)
+}
+
+
 #' @export
-priorsampler.normal <- function(f){
-  pars <- attr(f, "params")
+priorsampler.normal <- function(prior){
+  pars <- attr(prior, "params")
   g <- function(n){
     stats::rnorm(n, mean = pars[1], sd = pars[2])
   }
 
-  attr(g, "params") <- attr(f, "params")
-  class(g) <- c("sampler", attr(f, "class"))
+  attr(g, "params") <- attr(prior, "params")
+  class(g) <- c("sampler", attr(prior, "class"))
 
   return(g)
 }
 
 #' @export
-priorsampler.gamma <- function(f){
-  pars <- attr(f, "params")
+priorsampler.gamma <- function(prior){
+  pars <- attr(prior, "params")
   g <- function(n){
     stats::rgamma(n, shape = pars[1], rate = pars[2])
   }
 
-  attr(g, "params") <- attr(f, "params")
-  attr(g, "class") <- c("sampler", attr(f, "class"))
+  attr(g, "params") <- attr(prior, "params")
+  attr(g, "class") <- c("sampler", attr(prior, "class"))
 
   return(g)
 }
 
 #' @export
-priorsampler.halfnormal <- function(f){
-  pars <- attr(f, "params")
+priorsampler.halfnormal <- function(prior){
+  pars <- attr(prior, "params")
   g <- function(n){
     extraDistr::rhnorm(n, sigma = pars)
   }
 
-  attr(g, "params") <- attr(f, "params")
-  attr(g, "class") <- c("sampler", attr(f, "class"))
+  attr(g, "params") <- attr(prior, "params")
+  attr(g, "class") <- c("sampler", attr(prior, "class"))
 
   return(g)
 }
 
 #' @export
-priorsampler.halfcauchy <- function(f){
-  pars <- attr(f, "params")
+priorsampler.halfcauchy <- function(prior){
+  pars <- attr(prior, "params")
   g <- function(n){
     extraDistr::rhcauchy(n, sigma = pars)
   }
 
-  attr(g, "params") <- attr(f, "params")
-  attr(g, "class") <- c("sampler", attr(f, "class"))
+  attr(g, "params") <- attr(prior, "params")
+  attr(g, "class") <- c("sampler", attr(prior, "class"))
   return(g)
 }
 
 
 #' @export
-prior_sampler <- function(model, ...){
+prior_sampler <- function(priors){
   UseMethod("prior_sampler")
 }
 

@@ -1,12 +1,12 @@
 
-
-rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE, ncheck = 10){
+#' @export
+rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE, ncheck = FALSE){
 
   # number of parameters
   d <- length(initial)
 
   # a vector of rejection rates, one for each step
-  R <- log(runif(nsteps))
+  R <- log(stats::runif(nsteps))
 
   # a matrix of parameters, each row is a set of parameter for each step
   P <- matrix(NA, ncol = d, nrow = nsteps)

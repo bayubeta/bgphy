@@ -10,7 +10,7 @@ invlogit <- function(v){
 }
 
 
-#' @export
+
 loadParams <- function(o, p){
   # load parameters into a PCM model
   # similar functionality to PCMBase::PCMParamLoadOrStore, load = TRUE
@@ -49,7 +49,7 @@ loadParams <- function(o, p){
 }
 
 
-#' @export
+
 PCMGetParamNames <- function(o){
   r <- length(attr(o, "regimes"))
 
