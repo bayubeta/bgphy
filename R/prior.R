@@ -91,7 +91,7 @@ priorsampler <- function(prior){
   UseMethod("priorsampler")
 }
 
-
+#' @export
 priorsampler.uniform <- function(prior){
   pars <- attr(prior, "bounds")
   g <- function(n){
