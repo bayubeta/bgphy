@@ -1,15 +1,15 @@
 
 #' @export
-rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE, ncheck = FALSE){
+rwm <- function(model, X, tree, priors, initial, iter, scale = 0.01, progress = TRUE, ncheck = FALSE){
 
   # number of parameters
   d <- length(initial)
 
   # a vector of rejection rates, one for each step
-  R <- log(stats::runif(nsteps))
+  R <- log(stats::runif(iter))
 
   # a matrix of parameters, each row is a set of parameter for each step
-  P <- matrix(NA, ncol = d, nrow = nsteps)
+  P <- matrix(NA, ncol = d, nrow = iter)
   colnames(P) <- PCMGetParamNames(model)
 
 
@@ -42,7 +42,7 @@ rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE,
 
   # ==================== for progress bar ====================
   if (progress){
-    total <- nsteps
+    total <- iter
     pb <- progress::progress_bar$new(format = "[:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
     pb$tick(1)
@@ -53,7 +53,7 @@ rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE,
 
   # =================== for checkpoints ======================
   if (ncheck){
-    icheck <- round(nsteps / ncheck)
+    icheck <- round(iter / ncheck)
   }
   # ==========================================================
 
@@ -68,7 +68,7 @@ rwm <- function(model, X, tree, priors, initial, nsteps, scale, progress = TRUE,
   logpost0 <- lu_post(pars0)
 
 
-  for (i in 2:nsteps){
+  for (i in 2:iter){
 
     # random walk move
     pars1 <- mcmcmove(pars0, scale)

@@ -12,31 +12,15 @@ prior.default <- function(model, ...){
 
 }
 
+
 #' @export
-print.prior <- function(priors){
+print.prior <- function(priors, ...){
 
   varnames <- names(priors)
 
   for (i in 1:length(varnames)){
-
-    # print variable name and its distribution
-    type <- attr(priors[[i]], "class")[1]
-    cat(varnames[i], " ~ ", type, "(", sep = "")
-
-    # print the parameter values
-    params <- attr(priors[[i]], "params")
-    parnames <- names(params)
-    for (j in 1:length(parnames)){
-      cat(parnames[j], " = ", params[[j]], sep = "")
-
-      if (j != length(parnames)){
-        cat(", ")
-      }
-      else{
-        cat(")")
-      }
-    }
-    cat("\n")
+    cat(" ", varnames[i], sep = "")
+    print(priors[[i]])
   }
 }
 
@@ -49,7 +33,7 @@ prior_uniform <- function(min = 0, max = 1){
     stats::dunif(x, min = min, max = max, log = TRUE)
   }
 
-  class(f) <- c("uniform", "priorpdf")
+  class(f) <- c("priorpdf", "uniform")
   attr(f, "bounds") = c(min, max)
   attr(f, "params") <- stats::setNames(c(min, max), c("min", "max"))
 
@@ -62,7 +46,7 @@ prior_normal <- function(mean = 0, sd = 1){
     stats::dnorm(x, mean = mean, sd = sd, log = TRUE)
   }
 
-  class(f) <- c("normal", "prior")
+  class(f) <- c("priorpdf", "normal")
   attr(f, "params") <- stats::setNames(c(mean, sd), c("mean", "sd"))
 
   return(f)
@@ -74,7 +58,7 @@ prior_gamma <- function(shape, rate = 1, scale = 1/rate){
     stats::dgamma(x, shape, rate = rate, log = TRUE)
   }
 
-  class(f) <- c("gamma", "prior")
+  class(f) <- c("priorpdf", "gamma")
   attr(f, "bounds") <- c(0, Inf)
   attr(f, "params") <- stats::setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
 
@@ -88,7 +72,7 @@ prior_halfnormal <- function(sigma){
     extraDistr::dhnorm(x, sigma = sigma, log = TRUE)
   }
 
-  class(f) <- c("halfnormal", "prior")
+  class(f) <- c("priorpdf", "halfnormal")
   attr(f, "bounds") <- c(0, Inf)
   attr(f, "params") <- stats::setNames(c(sigma), c("sigma"))
 
@@ -102,7 +86,7 @@ prior_halfcauchy <- function(sigma){
     extraDistr::dhcauchy(x, sigma = sigma, log = TRUE)
   }
 
-  class(f) <- c("halfcauchy", "prior")
+  class(f) <- c("priorpdf", "halfcauchy")
   attr(f, "bounds") <- c(0, Inf)
   attr(f, "params") <- stats::setNames(c(sigma), c("sigma"))
 
@@ -110,17 +94,40 @@ prior_halfcauchy <- function(sigma){
 }
 
 
+#' @export
+print.priorpdf <- function(priorpdf, ...){
+  # print variable name and its distribution
+  type <- attr(priorpdf, "class")[2]
+  cat(" ~ ", type, "(", sep = "")
+
+  # print the parameter values
+  params <- attr(priorpdf, "params")
+  parnames <- names(params)
+
+  for (i in 1:length(parnames)){
+    cat(parnames[i], " = ", params[[i]], sep = "")
+
+    if (i != length(parnames)){
+      cat(", ")
+    }
+    else{
+      cat(")")
+    }
+  }
+  cat("\n")
+}
+
 
 #=================== samplers of prior distributions ===================
 
 
 #' @export
-priorsampler <- function(prior){
+priorsampler <- function(priorpdf){
   UseMethod("priorsampler")
 }
 
 #' @export
-priorsampler.uniform <- function(prior){
+priorsampler.uniform <- function(priorpdf){
   pars <- attr(prior, "bounds")
   g <- function(n){
     log(stats::runif(n, min = pars[1], max = pars[2]))
@@ -134,7 +141,7 @@ priorsampler.uniform <- function(prior){
 
 
 #' @export
-priorsampler.normal <- function(prior){
+priorsampler.normal <- function(priorpdf){
   pars <- attr(prior, "params")
   g <- function(n){
     stats::rnorm(n, mean = pars[1], sd = pars[2])
@@ -147,7 +154,7 @@ priorsampler.normal <- function(prior){
 }
 
 #' @export
-priorsampler.gamma <- function(prior){
+priorsampler.gamma <- function(priorpdf){
   pars <- attr(prior, "params")
   g <- function(n){
     stats::rgamma(n, shape = pars[1], rate = pars[2])
@@ -160,7 +167,7 @@ priorsampler.gamma <- function(prior){
 }
 
 #' @export
-priorsampler.halfnormal <- function(prior){
+priorsampler.halfnormal <- function(priorpdf){
   pars <- attr(prior, "params")
   g <- function(n){
     extraDistr::rhnorm(n, sigma = pars)
@@ -173,7 +180,7 @@ priorsampler.halfnormal <- function(prior){
 }
 
 #' @export
-priorsampler.halfcauchy <- function(prior){
+priorsampler.halfcauchy <- function(priorpdf){
   pars <- attr(prior, "params")
   g <- function(n){
     extraDistr::rhcauchy(n, sigma = pars)
