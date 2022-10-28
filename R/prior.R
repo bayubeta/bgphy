@@ -13,8 +13,16 @@ prior.default <- function(model, ...){
 }
 
 
+setPriors <- function(model){
+  parnames <- PCMGetParamNames(model)
+
+  structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
+}
+
+
+
 #' @export
-print.prior <- function(priors, ...){
+print.mgpm_prior <- function(priors, ...){
 
   varnames <- names(priors)
 
@@ -128,13 +136,13 @@ priorsampler <- function(priorpdf){
 
 #' @export
 priorsampler.uniform <- function(priorpdf){
-  pars <- attr(prior, "bounds")
+  pars <- attr(priorpdf, "bounds")
   g <- function(n){
     log(stats::runif(n, min = pars[1], max = pars[2]))
   }
 
-  attr(g, "params") <- attr(prior, "bounds")
-  class(g) <- c("sampler", attr(prior, "class"))
+  attr(g, "params") <- attr(priorpdf, "bounds")
+  class(g) <- c("sampler", attr(priorpdf, "class"))
 
   return(g)
 }
@@ -142,52 +150,52 @@ priorsampler.uniform <- function(priorpdf){
 
 #' @export
 priorsampler.normal <- function(priorpdf){
-  pars <- attr(prior, "params")
+  pars <- attr(priorpdf, "params")
   g <- function(n){
     stats::rnorm(n, mean = pars[1], sd = pars[2])
   }
 
-  attr(g, "params") <- attr(prior, "params")
-  class(g) <- c("sampler", attr(prior, "class"))
+  attr(g, "params") <- attr(priorpdf, "params")
+  class(g) <- c("sampler", attr(priorpdf, "class"))
 
   return(g)
 }
 
 #' @export
 priorsampler.gamma <- function(priorpdf){
-  pars <- attr(prior, "params")
+  pars <- attr(priorpdf, "params")
   g <- function(n){
     stats::rgamma(n, shape = pars[1], rate = pars[2])
   }
 
-  attr(g, "params") <- attr(prior, "params")
-  attr(g, "class") <- c("sampler", attr(prior, "class"))
+  attr(g, "params") <- attr(priorpdf, "params")
+  attr(g, "class") <- c("sampler", attr(priorpdf, "class"))
 
   return(g)
 }
 
 #' @export
 priorsampler.halfnormal <- function(priorpdf){
-  pars <- attr(prior, "params")
+  pars <- attr(priorpdf, "params")
   g <- function(n){
     extraDistr::rhnorm(n, sigma = pars)
   }
 
-  attr(g, "params") <- attr(prior, "params")
-  attr(g, "class") <- c("sampler", attr(prior, "class"))
+  attr(g, "params") <- attr(priorpdf, "params")
+  attr(g, "class") <- c("sampler", attr(priorpdf, "class"))
 
   return(g)
 }
 
 #' @export
 priorsampler.halfcauchy <- function(priorpdf){
-  pars <- attr(prior, "params")
+  pars <- attr(priorpdf, "params")
   g <- function(n){
     extraDistr::rhcauchy(n, sigma = pars)
   }
 
-  attr(g, "params") <- attr(prior, "params")
-  attr(g, "class") <- c("sampler", attr(prior, "class"))
+  attr(g, "params") <- attr(priorpdf, "params")
+  attr(g, "class") <- c("sampler", attr(priorpdf, "class"))
   return(g)
 }
 
@@ -199,7 +207,7 @@ prior_sampler <- function(priors){
 
 
 #' @export
-prior_sampler.prior <- function(priors){
+prior_sampler.mgpm_prior <- function(priors){
   p_sampler <- lapply(priors, priorsampler)
   p <- length(p_sampler)
   function(n){
