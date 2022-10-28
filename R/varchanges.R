@@ -7,7 +7,7 @@ varchange <- function(prior){
 
 # bounded under (a,b)
 #' @export
-varchange.prior <- function(prior){
+varchange.priorpdf <- function(prior){
   # retrieve bounds
   bounds <- attr(prior, "bounds")
 
@@ -29,7 +29,7 @@ varchange.prior <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c(class(prior), "transformed")
+      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "lowup"
 
       return(fy)
@@ -44,7 +44,7 @@ varchange.prior <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c(class(prior), "transformed")
+      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "low"
 
       return(fy)
@@ -58,11 +58,58 @@ varchange.prior <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c(class(prior), "transformed")
+      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "up"
 
       return(fy)
     }
+  }
+}
+
+
+#' @export
+varchange.mgpm_prior <- function(priors){
+  priors_tr <- lapply(priors, varchange)
+  attr(priors_tr, "class") <- "mgpm_prior"
+
+  return(priors_tr)
+}
+
+
+#' @export
+print.transformed <- function(transformed, unit = TRUE){
+
+  if (unit){
+    cat("  ~ ")
+  }
+
+  disttype <- class(transformed)[3]
+  btype <- attr(transformed, "btype")
+  bounds <- attr(transformed, "bounds")
+
+  if (btype == "lowup"){
+    a <- bounds[1]
+    b <- bounds[2]
+    cat("logit((")
+    print.priorpdf(transformed, unit = FALSE)
+    cat(" - a)/(", "b - a)),", "\n", sep = "")
+    cat("    a = ", a, ", b = ", b, sep = "")
+  }
+
+  else if (btype == "low"){
+    a <- bounds[1]
+    cat("log(")
+    print.priorpdf(transformed, unit = FALSE)
+    cat(" - a),", "\n")
+    cat("    a =", a, "\n")
+  }
+
+  else{
+    b <- bounds[2]
+    cat("log(b - ", sep = "")
+    print.priorpdf(transformed, unit = FALSE)
+    cat(" - a),", "\n")
+    cat("    a =", a, "\n")
   }
 }
 

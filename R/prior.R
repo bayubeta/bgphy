@@ -13,6 +13,7 @@ prior.default <- function(model, ...){
 }
 
 
+#' @export
 setPriors <- function(model){
   parnames <- PCMGetParamNames(model)
 
@@ -27,8 +28,9 @@ print.mgpm_prior <- function(priors, ...){
   varnames <- names(priors)
 
   for (i in 1:length(varnames)){
-    cat(" ", varnames[i], sep = "")
-    print(priors[[i]])
+    cat("  ", varnames[i], " ~ ", sep = "")
+    print(priors[[i]], unit = FALSE)
+    cat("\n")
   }
 }
 
@@ -103,10 +105,16 @@ prior_halfcauchy <- function(sigma){
 
 
 #' @export
-print.priorpdf <- function(priorpdf, ...){
+print.priorpdf <- function(priorpdf, unit = TRUE, ...){
   # print variable name and its distribution
-  type <- attr(priorpdf, "class")[2]
-  cat(" ~ ", type, "(", sep = "")
+  classes <- attr(priorpdf, "class")
+  type <- classes[length(classes)]
+
+  if (unit){
+    cat("  ~ ")
+  }
+
+  cat(type, "(", sep = "")
 
   # print the parameter values
   params <- attr(priorpdf, "params")
@@ -122,7 +130,6 @@ print.priorpdf <- function(priorpdf, ...){
       cat(")")
     }
   }
-  cat("\n")
 }
 
 
