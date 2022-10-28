@@ -18,7 +18,7 @@ rwm <- function(model, X, tree, priors, initial, iter, scale = 0.01, progress = 
   # tr: X to Y and vice versa
 
   # apply change of variables to priors into unbounded space
-  priors_tr <- lapply(priors, varchange)
+  priors_tr <- varchange(priors)
   ############
 
 
