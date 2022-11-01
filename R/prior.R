@@ -145,7 +145,7 @@ priorsampler <- function(priorpdf){
 priorsampler.uniform <- function(priorpdf){
   pars <- attr(priorpdf, "bounds")
   g <- function(n){
-    log(stats::runif(n, min = pars[1], max = pars[2]))
+    stats::runif(n, min = pars[1], max = pars[2])
   }
 
   attr(g, "params") <- attr(priorpdf, "bounds")

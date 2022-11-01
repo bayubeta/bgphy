@@ -19,4 +19,7 @@ Imports:
 Depends: 
     R (>= 2.10)
 LazyData: true
-LinkingTo: Rcpp
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    RcppDist

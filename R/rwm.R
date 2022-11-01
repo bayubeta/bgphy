@@ -104,14 +104,13 @@ rwm <- function(model, X, tree, priors, initial, iter, scale = 0.01, progress = 
   }
 
 
-  class(P) <- "posterior"
-
-
   # ================= transform samples back =================
   P <- t(apply(P, 1, tr$g))
 
 
+  # acceptance rate
   attr(P, "accept") <- mean(ar)
+
 
   return(P)
 
