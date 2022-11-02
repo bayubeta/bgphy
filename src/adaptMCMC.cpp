@@ -4,6 +4,24 @@
 
 using namespace Rcpp;
 
+// MCMC move with a fixed step size
+// [[Rcpp::export]]
+arma::mat fixedMCMC(arma::vec X, double sigma){
+
+  // obtain d, number of dimensions
+  double d = X.n_elem;
+
+  // covariance of fixed move
+  arma::mat Sfixed = ((pow(sigma, 2))/d) * arma::eye(d,d);
+
+  // fixed move
+  arma::mat Xfixed = rmvnorm(1, X, Sfixed);
+
+
+  return Xfixed;
+}
+
+
 
 // adaptive MCMC move given a set of observations
 // [[Rcpp::export]]
@@ -24,13 +42,16 @@ arma::mat adaptMCMC(arma::mat X, double beta, double sigma){
   arma::mat Xadapt = (1-beta)*rmvnorm(1, Xn, S);
 
 
-
-  // covariance of fixed move
-  arma::mat Sfixed = ((pow(sigma, 2))/d)*eye(size(S));
-
   // fixed move
-  arma::mat Xfixed = beta*rmvnorm(1, Xn, S);
+  arma::mat Xfixed = beta * fixedMCMC(Xn, sigma);
 
 
   return Xadapt + Xfixed;
 }
+
+
+/*** R
+fixedMCMC(P1n, 0.01)
+adaptMCMC(P1, 0.05, 0.01)
+*/
+
