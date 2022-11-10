@@ -11,16 +11,43 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// adaptMCMC
-arma::mat adaptMCMC(arma::mat X, double beta, double sigma);
-RcppExport SEXP _bmgpm_adaptMCMC(SEXP XSEXP, SEXP betaSEXP, SEXP sigmaSEXP) {
+// covUpdate
+arma::mat covUpdate(arma::vec x, arma::mat S, arma::vec mean_n, int n);
+RcppExport SEXP _bmgpm_covUpdate(SEXP xSEXP, SEXP SSEXP, SEXP mean_nSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mean_n(mean_nSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(covUpdate(x, S, mean_n, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fixedMCMC
+arma::mat fixedMCMC(arma::vec X, double sigma);
+RcppExport SEXP _bmgpm_fixedMCMC(SEXP XSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type X(XSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(fixedMCMC(X, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// adaptMCMC
+arma::mat adaptMCMC(arma::vec X, arma::mat S, double beta, double sigma);
+RcppExport SEXP _bmgpm_adaptMCMC(SEXP XSEXP, SEXP SSEXP, SEXP betaSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(adaptMCMC(X, beta, sigma));
+    rcpp_result_gen = Rcpp::wrap(adaptMCMC(X, S, beta, sigma));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -38,7 +65,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_bmgpm_adaptMCMC", (DL_FUNC) &_bmgpm_adaptMCMC, 3},
+    {"_bmgpm_covUpdate", (DL_FUNC) &_bmgpm_covUpdate, 4},
+    {"_bmgpm_fixedMCMC", (DL_FUNC) &_bmgpm_fixedMCMC, 2},
+    {"_bmgpm_adaptMCMC", (DL_FUNC) &_bmgpm_adaptMCMC, 4},
     {"_bmgpm_mcmcmove", (DL_FUNC) &_bmgpm_mcmcmove, 2},
     {NULL, NULL, 0}
 };

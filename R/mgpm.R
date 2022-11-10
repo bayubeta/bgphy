@@ -13,7 +13,7 @@ mgpm <- function(model, X, tree, priors, iter = 10000, burn = 0.1*iter, method =
   if (progress){timestamp()}
 
   P <- rwm(model = model, X = X, tree = tree, priors = priors,
-           initial = initial, iter = iter + burn, progress = progress, ...)
+           initial = initial, iter = iter + burn, burn = burn, progress = progress, ...)
 
   # acceptance rate
   ar <- attr(P, "accept")

@@ -4,6 +4,18 @@
 
 using namespace Rcpp;
 
+
+
+
+
+// Update previous covariance matrix with current data
+// [[Rcpp::export]]
+arma::mat covUpdate(arma::vec x, arma::mat S, arma::vec mean_n, int n){
+  arma::vec delta = x - mean_n;
+  return (n-1)*S/n + arma::kron(delta, delta.as_row())/(n+1);
+}
+
+
 // MCMC move with a fixed step size
 // [[Rcpp::export]]
 arma::mat fixedMCMC(arma::vec X, double sigma){
@@ -25,25 +37,19 @@ arma::mat fixedMCMC(arma::vec X, double sigma){
 
 // adaptive MCMC move given a set of observations
 // [[Rcpp::export]]
-arma::mat adaptMCMC(arma::mat X, double beta, double sigma){
-  // obtain n, number of observations
-  int n = X.n_rows;
+arma::mat adaptMCMC(arma::vec X, arma::mat S, double beta, double sigma){
 
   // obtain d, number of dimensions
-  double d = X.n_cols;
-
-  // set the last value as the current
-  arma::vec Xn = vectorise(X.row(n-1));
+  double d = X.n_elem;
 
   // covariance of adaptive move
-  arma::mat S = ((pow(2.38, 2))/d)*cov(X);
+  arma::mat Sadapt = ((pow(2.38, 2))/d)*S;
 
   // adaptive move
-  arma::mat Xadapt = (1-beta)*rmvnorm(1, Xn, S);
-
+  arma::mat Xadapt = (1-beta)*rmvnorm(1, X, Sadapt);
 
   // fixed move
-  arma::mat Xfixed = beta * fixedMCMC(Xn, sigma);
+  arma::mat Xfixed = beta * fixedMCMC(X, sigma);
 
 
   return Xadapt + Xfixed;
@@ -51,7 +57,7 @@ arma::mat adaptMCMC(arma::mat X, double beta, double sigma){
 
 
 /*** R
-fixedMCMC(P1n, 0.01)
-adaptMCMC(P1, 0.05, 0.01)
+Sn1 = covUpdate(xn1, Sn, mu_n, n)
+adaptMCMC(xn1, Sn1, 0.05, 0.1)
 */
 

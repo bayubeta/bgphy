@@ -1,6 +1,6 @@
 
 #' @export
-rwm <- function(model, X, tree, priors, initial, iter, scale = 0.01, progress = TRUE, ncheck = FALSE){
+rwm <- function(model, X, tree, priors, initial, iter, burn, scale = 0.1, progress = TRUE, ncheck = FALSE){
 
   # number of parameters
   d <- length(initial)
@@ -67,11 +67,42 @@ rwm <- function(model, X, tree, priors, initial, iter, scale = 0.01, progress = 
   pars0 <- initial
   logpost0 <- lu_post(pars0)
 
+  # set a starting point for the adaptive phase
+  adapt_start = 5*d + 1
+
 
   for (i in 2:iter){
 
     # random walk move
-    pars1 <- mcmcmove(pars0, scale)
+    if (i <= 5*d){
+      # fixed MCMC move for i in 1:2d
+      pars1 <- fixedMCMC(pars0, scale)
+    }
+    else if (i == adapt_start){
+      # start the adaptive phase
+      # compute the sample covariance for the current time (n = i-1)
+      Sn <- cov(P[1:(i-1),])
+
+      # compute the sample mean for the current time (n = i-1)
+      mu_n <- colMeans(P[1:(i-1),])
+
+      # adaptive MCMC move, sample proposal values
+      pars1 <- adaptMCMC(pars0, Sn, 0.05, scale)
+
+    }
+    else{
+      # adaptive MCMC move for i in adapt_start+1:iter
+      n = i - 1
+      # update the sample mean for the current time (n = i-1)
+      mu_n <- (n*mu_n + pars0)/(n+1) # i is the next iteration, n+1
+
+      # update the sample covariance for the current time
+      Sn = covUpdate(pars0, Sn, mu_n, n)
+
+      # adaptive MCMC move, sample proposal values
+      pars1 <- adaptMCMC(pars0, Sn, 0.05, scale)
+    }
+
 
     # calculate log posterior on the new set of parameters
     logpost1 <- lu_post(pars1)
