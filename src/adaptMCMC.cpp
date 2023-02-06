@@ -55,9 +55,3 @@ arma::mat adaptMCMC(arma::vec X, arma::mat S, double beta, double sigma){
   return Xadapt + Xfixed;
 }
 
-
-/*** R
-Sn1 = covUpdate(xn1, Sn, mu_n, n)
-adaptMCMC(xn1, Sn1, 0.05, 0.1)
-*/
-

@@ -33,8 +33,12 @@ loadParams <- function(o, p){
     for (name in names(o)){
       plength <- length(o[[name]])
 
+      if (pos >= attr(o, "p")){
+        break
+      }
+
       if (plength == 1){
-        o[[name]][] <- p[pos]
+        o[[name]][[1]][] <- p[pos]
         pos = pos + 1
       }
       else{
