@@ -57,6 +57,7 @@ prior_normal <- function(mean = 0, sd = 1){
   }
 
   class(f) <- c("priorpdf", "normal")
+  attr(f, "bounds") <- c(-Inf, Inf)
   attr(f, "params") <- stats::setNames(c(mean, sd), c("mean", "sd"))
 
   return(f)
