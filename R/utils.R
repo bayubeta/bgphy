@@ -1,4 +1,4 @@
-######################
+# ========================== helper functions ==========================
 
 
 logit <- function(u){
@@ -8,8 +8,6 @@ logit <- function(u){
 invlogit <- function(v){
   1/(1 + exp(-v))
 }
-
-
 
 loadParams <- function(o, p){
   # load parameters into a PCM model

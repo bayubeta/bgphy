@@ -1,4 +1,3 @@
-#' @export
 setParams <- function(p, model){
   # p: all parameters, excluding Sigmae_x
   # p := c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr, Sigmae_x)
@@ -18,7 +17,6 @@ setParams <- function(p, model){
 
 
 # log-likelihood given data, tree, and model with parameter values
-#' @export
 PCMloglik <- function(X, tree, model, p){
   # model with parameters p
   prop_model <- setParams(p, model)
@@ -30,7 +28,6 @@ PCMloglik <- function(X, tree, model, p){
 }
 
 # log-unnormalized-posterior
-#' @export
 lupost <- function(p, model, X, tree, priors_tr, tr){
 
   # p: vector of parameters, c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr)

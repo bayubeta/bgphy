@@ -47,7 +47,7 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
     # log proposal
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
                                mean = post_mode, sigma = appr_cov, log = TRUE)
-    parallel::stopCluster(cl)
+    on.exit(parallel::stopCluster(cl))
   }else{
     # log-unnormalized posterior & loglik
     lup_ll <- t(apply(q, 1, bmgpm::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior

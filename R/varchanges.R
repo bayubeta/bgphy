@@ -1,9 +1,10 @@
-# change of variable methods for constrained parameters
+#============= change of variable methods for constrained parameters =============
 
-#' @export
+
 varchange <- function(prior){
   UseMethod("varchange")
 }
+
 
 # bounded under (a,b)
 #' @export
@@ -115,7 +116,6 @@ print.transformed <- function(transformed, unit = TRUE){
 
 
 
-#' @export
 trfunc <- function(priors_tr){
   # function that returns a function
   # to transform a parameter to/from the unbounded space

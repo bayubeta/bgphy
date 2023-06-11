@@ -3,6 +3,34 @@ prior <- function(model, ...){
   UseMethod("prior")
 }
 
+#' Set a prior object given a model of class \code{PCM}.
+#'
+#' This function takes a model of class \code{PCM}, created from \code{PCMBase},
+#'   and outputs a blank prior object of class \code{mgpm_prior}.
+#'   Users can then modify the prior accordingly using functions of class \code{priorpdf}.
+#'   Modifying an \code{mgpm_prior} object is similar to modifying a list,
+#'   in which the users can replace the values in the list with \code{priorpdf} functions
+#'   provided by the \code{bmgpm} package or by the users.
+#'
+#' @param model A \code{PCM} object.
+#'
+#' @return A prior object of class \code{mgpm_prior}, which is required for the main function, \code{mgpm}.
+#'
+#' @examples
+#' OU <- PCMBase::PCM("OU")
+#' priorOU <- setPriors(OU)
+#' priorOU$X0 <- prior_normal(mean = 0, sd = 1)
+#' priorOU$H <- prior_halfnormal(sigma = 1)
+#' priorOU$Theta <- prior_normal(mean = 0, sd = 1)
+#' priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
+#' @export
+setPriors <- function(model){
+  parnames <- PCMGetParamNames(model)
+
+  structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
+}
+
+
 #' @export
 prior.default <- function(model, ...){
 
@@ -11,15 +39,6 @@ prior.default <- function(model, ...){
   structure(sapply(parnames, function(x) NULL), class = "prior")
 
 }
-
-
-#' @export
-setPriors <- function(model){
-  parnames <- PCMGetParamNames(model)
-
-  structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
-}
-
 
 
 #' @export
@@ -35,8 +54,25 @@ print.mgpm_prior <- function(priors, ...){
 }
 
 
-#=================== pdfs of prior distributions ===================
+#============================= pdfs of prior distributions =============================
 
+#' log Probability density functions.
+#'
+#' This is a collection of log probability density functions used for the prior object of class \code{mgpm_prior}.
+#'
+#' @return A log probability density function of class \code{priorpdf}.
+#'
+#' @examples
+#' OU <- PCMBase::PCM("OU")
+#' priorOU <- setPriors(OU)
+#' priorOU$X0 <- prior_normal(mean = 0, sd = 1)
+#' priorOU$H <- prior_halfnormal(sigma = 1)
+#' priorOU$Theta <- prior_normal(mean = 0, sd = 1)
+#' priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
+#'
+#' @name priorpdf
+
+#' @rdname priorpdf
 #' @export
 prior_uniform <- function(min = 0, max = 1){
   f <- function(x){
@@ -44,12 +80,13 @@ prior_uniform <- function(min = 0, max = 1){
   }
 
   class(f) <- c("priorpdf", "uniform")
-  attr(f, "bounds") = c(min, max)
+  attr(f, "bounds") <- c(min, max)
   attr(f, "params") <- stats::setNames(c(min, max), c("min", "max"))
 
   return(f)
 }
 
+#' @rdname priorpdf
 #' @export
 prior_normal <- function(mean = 0, sd = 1){
   f <- function(x){
@@ -63,6 +100,7 @@ prior_normal <- function(mean = 0, sd = 1){
   return(f)
 }
 
+#' @rdname priorpdf
 #' @export
 prior_gamma <- function(shape, rate = 1, scale = 1/rate){
   f <- function(x){
@@ -76,7 +114,7 @@ prior_gamma <- function(shape, rate = 1, scale = 1/rate){
   return(f)
 }
 
-
+#' @rdname priorpdf
 #' @export
 prior_halfnormal <- function(sigma){
   f <- function(x){
@@ -90,7 +128,7 @@ prior_halfnormal <- function(sigma){
   return(f)
 }
 
-
+#' @rdname priorpdf
 #' @export
 prior_halfcauchy <- function(sigma){
   f <- function(x){
@@ -106,6 +144,17 @@ prior_halfcauchy <- function(sigma){
 
 
 #' @export
+priorPDF <- function(f, bounds){
+  fname <- deparse(substitute(f))
+  class(f) <- c("priorpdf", "custom")
+  attr(f, "bounds") <- bounds
+  attr(f, "fname") <- fname
+  return(f)
+}
+
+
+# print priorpdf class
+#' @export
 print.priorpdf <- function(priorpdf, unit = TRUE, ...){
   # print variable name and its distribution
   classes <- attr(priorpdf, "class")
@@ -115,26 +164,32 @@ print.priorpdf <- function(priorpdf, unit = TRUE, ...){
     cat("  ~ ")
   }
 
-  cat(type, "(", sep = "")
+  if (type == "custom"){
+    fname <- attr(priorpdf, "fname")
+    cat(fname)
+  }else{
+    cat(type, "(", sep = "")
 
-  # print the parameter values
-  params <- attr(priorpdf, "params")
-  parnames <- names(params)
+    # print the parameter values
+    params <- attr(priorpdf, "params")
+    parnames <- names(params)
 
-  for (i in 1:length(parnames)){
-    cat(parnames[i], " = ", params[[i]], sep = "")
+    for (i in 1:length(parnames)){
+      cat(parnames[i], " = ", params[[i]], sep = "")
 
-    if (i != length(parnames)){
-      cat(", ")
-    }
-    else{
-      cat(")")
+      if (i != length(parnames)){
+        cat(", ")
+      }
+      else{
+        cat(")")
+      }
     }
   }
 }
 
 
-#=================== samplers of prior distributions ===================
+
+#============================= samplers of prior distributions =============================
 
 
 #' @export
