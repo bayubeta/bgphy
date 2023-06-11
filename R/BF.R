@@ -102,12 +102,12 @@ refDist <- function(P, priors){
 # ================ Importance Sampling ================
 # use importance sampling with reference distribution as the proposal
 
-logMargLik_IS <- function(X, tree, model, priors, P, nsample = 1000, progress = TRUE){
+logMargLik_IS <- function(model, X, tree, priors, posterior, nsample = 10000, progress = TRUE){
 
   if (progress){timestamp()}
 
   # create a reference distribution
-  rd <- refDist(P, priors)
+  rd <- refDist(posterior, priors)
 
   # sample values from reference dist. as proposals
   Pr <- prior_sampler(rd)(nsample)

@@ -29,7 +29,7 @@ PCMloglik <- function(X, tree, model, p){
   return(loglik[1])
 }
 
-
+# log-unnormalized-posterior
 #' @export
 lupost <- function(p, model, X, tree, priors_tr, tr){
 
@@ -37,9 +37,12 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
   # model: PCM model
   # tree: phylo object
   # priors_tr: list of priors pdf on unbounded space
-  # tr: transformation functions
+  # tr: transformation functions, obtained from trfunc()
 
-  # change parameters to p (bounded), because PCMLik needs parameter values from the original space
+  if (is.null(dim(X))){X <- matrix(X, nrow = 1)}
+
+  # change parameters to p_b(ounded),
+  # because PCMLik (the likelihood) needs parameter values from the original space
   p_b <- tr$g(p)
 
   # do not raise warning
@@ -50,6 +53,7 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
   loglik <- PCMloglik(X, tree, model, p_b)
 
   # log priors
+  # calculated in the unbounded space
   log_p <- sum(mapply(function(f, x){f(x)}, priors_tr, p))
 
   # sum of log-likelihood and log priors
@@ -60,6 +64,6 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
     return(-1e20)
   }
 
-  return(sum_log[1])
+  return(setNames(c(sum_log[1],loglik), c("log_u_post", "loglik")))
 }
 

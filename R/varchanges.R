@@ -11,7 +11,7 @@ varchange.priorpdf <- function(prior){
   # retrieve bounds
   bounds <- attr(prior, "bounds")
 
-  if (is.null(bounds)){
+  if (all(is.infinite(bounds))){
     return(prior)
   }
 

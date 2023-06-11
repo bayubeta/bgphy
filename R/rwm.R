@@ -68,13 +68,13 @@ rwm <- function(model, X, tree, priors, initial, iter, burn, scale = 0.1, progre
   logpost0 <- lu_post(pars0)
 
   # set a starting point for the adaptive phase
-  adapt_start = 5*d + 1
+  adapt_start = 20*d + 1
 
 
   for (i in 2:iter){
 
     # random walk move
-    if (i <= 5*d){
+    if (i <= 20*d){
       # fixed MCMC move for i in 1:2d
       pars1 <- fixedMCMC(pars0, scale)
     }
