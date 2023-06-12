@@ -28,7 +28,7 @@
 "XOU"
 
 #' @rdname datasets
-#' @format `XMixedOU` is a matrix of size 100 x 100. Each row of was simulated on `lizardTree` under the `modelMixedOU`.
+#' @format `XMixedOU` is a matrix of size 100 x 100. Each row of was simulated on `lizardTreeMixed` under the `modelMixedOU`.
 "XMixedOU"
 
 

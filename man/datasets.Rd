@@ -9,7 +9,7 @@
 \format{
 \code{XOU} is a matrix of size 100 x 100. Each row of was simulated on \code{lizardTree} under the \code{modelOU}.
 
-\code{XMixedOU} is a matrix of size 100 x 100. Each row of was simulated on \code{lizardTree} under the \code{modelMixedOU}.
+\code{XMixedOU} is a matrix of size 100 x 100. Each row of was simulated on \code{lizardTreeMixed} under the \code{modelMixedOU}.
 }
 \usage{
 XOU
