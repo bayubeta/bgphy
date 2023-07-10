@@ -37,10 +37,54 @@ mgpm <- function(model, X, tree, priors, nsample = 10000, initial = NULL, scale 
 
   if (is.null(dim(X))){X <- matrix(X, nrow = 1)}
 
+  # run inference using importance sampling
   res <- IS(model = model, X = X, tree = tree, priors = priors,
             initial = initial, nsample = nsample, scale = scale, parallel = parallel)
+
+  # matrix of normalized weights
+  MW <- matrix(rep(res$W, dim(res$Q)[2]), ncol = dim(res$Q)[2])
+
+  # compute mean
+  res$mean <- colSums(res$Q*MW)
+
+  # compute std error of posterior parameters mean
+  # matrix of means in each row
+  Mm <- matrix(rep(res$mean, nsample), nrow = dim(res$Q)[1], ncol = dim(res$Q)[2], byrow = TRUE)
+  var_lp <- colSums((MW^2)*((res$Q - Mm)^2))
+  res$std_error <- setNames(sqrt(var_lp), names(res$mean))
+
+  # compute (estimated) standard deviation
+  var_hat <- colSums(res$Q^2 * MW) - (res$mean)^2
+  res$std <- setNames(sqrt(var_hat), names(res$mean))
+
+  # matrix of quantiles
+  Mq <- est_quantiles(res$Q, res$W)
+  rownames(Mq) <- names(res$mean)
+  res$quantiles <- Mq
+
+  # change order of the list
+  res <- res[c("mean", "std_error", "std", "quantiles", "WAIC", "Q", "W")]
+
 
   class(res) <- "mgpm_posterior"
 
   return(res)
 }
+
+
+
+print.mgpm_posterior <- function(mgpm){
+  # get parameter names
+  par_names <- names(mgpm$mean)
+
+  # get quantity names
+  q_names <- c(names(mgpm)[1:3], c("2.5%", "50%", "97.5%"))
+
+  # put information into a matrix
+  M <- matrix(unlist(mgpm[1:4]), nrow = length(par_names))
+  colnames(M) <- q_names
+  rownames(M) <- par_names
+
+  print(M)
+}
+

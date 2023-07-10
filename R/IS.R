@@ -66,7 +66,7 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
 
   # compute expected values
   Epars_ls <- colSums(q*MWst) # expected value (in log space)
-  Epars <-tr$g(Epars_ls) # transform the expected value to the original space
+  Epars <- tr$g(Epars_ls) # transform the expected value to the original space
 
   # compute WAIC
   meanlp <- sum(loglik*Wst) # mean of log predictive dist
@@ -76,5 +76,38 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
 
   Q <- t(apply(q, 1, tr$g)) # proposed values on the original space
 
-  return(list(E = Epars, Q = Q, W = Wst, WAIC = WAIC))
+  return(list(Q = Q, W = Wst, WAIC = WAIC))
 }
+
+
+
+est_quantiles <- function(Q, W, probs = c(0.025, 0.5, 0.975)){
+
+  # number of params
+  d <- dim(Q)[2]
+
+  # matrix of quantiles
+  qM <- matrix(nrow = d, ncol = length(probs))
+
+  for (i in 1:d){
+    # sort the parameter values
+    qSort <- sort(Q[,i], index.return = TRUE)
+    # sorted parameter values
+    q_sorted <- qSort$x
+    # indices
+    idx <- qSort$ix
+
+    # compute quantiles
+    qtls <- sapply(probs, function(p){min(which(cumsum(W[idx]) >= p))})
+
+    # store to matrix
+    qM[i,] <- q_sorted[qtls]
+  }
+
+  colnames(qM) <- probs
+
+
+  return(qM)
+}
+
+
