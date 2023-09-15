@@ -13,12 +13,7 @@ Imports:
     extraDistr,
     PCMBase,
     PCMBaseCpp,
-    Rcpp,
     stats
 Depends: 
     R (>= 2.10)
 LazyData: true
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo,
-    RcppDist
