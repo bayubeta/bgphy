@@ -61,6 +61,6 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
     return(-1e20)
   }
 
-  return(setNames(c(sum_log[1],loglik), c("log_u_post", "loglik")))
+  return(stats::setNames(c(sum_log[1],loglik), c("log_u_post", "loglik")))
 }
 

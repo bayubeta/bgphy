@@ -18,14 +18,14 @@
 #' * `WAIC`:   Widely Available Criterion Score.
 #'
 #' @examples
-#' OU <- PCMBase::PCM("OU")
-#' priorOU <- setPriors(OU)
-#' priorOU$X0 <- prior_normal(mean = 0, sd = 1)
-#' priorOU$H <- prior_halfnormal(sigma = 1)
-#' priorOU$Theta <- prior_normal(mean = 0, sd = 1)
-#' priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
-#'
-#' post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
+#' # OU <- PCMBase::PCM("OU")
+#' # priorOU <- setPriors(OU)
+#' # priorOU$X0 <- prior_normal(mean = 0, sd = 1)
+#' # priorOU$H <- prior_halfnormal(sigma = 1)
+#' # priorOU$Theta <- prior_normal(mean = 0, sd = 1)
+#' # priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
+#' #
+#' # post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
 #'
 #' @export
 mgpm <- function(model, X, tree, priors, nsample = 10000, initial = NULL, scale = 1, parallel = TRUE){
@@ -51,11 +51,11 @@ mgpm <- function(model, X, tree, priors, nsample = 10000, initial = NULL, scale 
   # matrix of means in each row
   Mm <- matrix(rep(res$mean, nsample), nrow = dim(res$Q)[1], ncol = dim(res$Q)[2], byrow = TRUE)
   var_lp <- colSums((MW^2)*((res$Q - Mm)^2))
-  res$std_error <- setNames(sqrt(var_lp), names(res$mean))
+  res$std_error <- stats::setNames(sqrt(var_lp), names(res$mean))
 
   # compute (estimated) standard deviation
   var_hat <- colSums(res$Q^2 * MW) - (res$mean)^2
-  res$std <- setNames(sqrt(var_hat), names(res$mean))
+  res$std <- stats::setNames(sqrt(var_hat), names(res$mean))
 
   # matrix of quantiles
   Mq <- est_quantiles(res$Q, res$W)

@@ -21,12 +21,12 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
   initial <- tr$f(initial)
 
   # simplify lupost as a function of parameters
-  lu_post <- function(p){bgphy::lupost(p, model, X, tree, priors_tr, tr)[[1]]}
+  lu_post <- function(p){lupost(p, model, X, tree, priors_tr, tr)[[1]]}
 
   # ================== begin the Laplace approximation routine
   # search posterior mode
-  optRes <- optim(par = initial, fn = lu_post, method = "BFGS",
-                  control = list(fnscale=-1), hessian = TRUE)
+  optRes <- stats::optim(par = initial, fn = lu_post, method = "BFGS",
+                         control = list(fnscale=-1), hessian = TRUE)
   # posterior mode (log space)
   post_mode <- optRes$par
   # approximated covariance, scale to focus on the important area around mode

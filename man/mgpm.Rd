@@ -44,13 +44,13 @@ A list of class \code{mgpm_posterior} which contains:
 The main function to run Bayesian inference of mixed Gaussian phylogenetic models.
 }
 \examples{
-OU <- PCMBase::PCM("OU")
-priorOU <- setPriors(OU)
-priorOU$X0 <- prior_normal(mean = 0, sd = 1)
-priorOU$H <- prior_halfnormal(sigma = 1)
-priorOU$Theta <- prior_normal(mean = 0, sd = 1)
-priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
-
-post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
+# OU <- PCMBase::PCM("OU")
+# priorOU <- setPriors(OU)
+# priorOU$X0 <- prior_normal(mean = 0, sd = 1)
+# priorOU$H <- prior_halfnormal(sigma = 1)
+# priorOU$Theta <- prior_normal(mean = 0, sd = 1)
+# priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
+#
+# post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
 
 }
