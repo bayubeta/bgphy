@@ -21,7 +21,7 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
   initial <- tr$f(initial)
 
   # simplify lupost as a function of parameters
-  lu_post <- function(p){bmgpm::lupost(p, model, X, tree, priors_tr, tr)[[1]]}
+  lu_post <- function(p){bgphy::lupost(p, model, X, tree, priors_tr, tr)[[1]]}
 
   # ================== begin the Laplace approximation routine
   # search posterior mode
@@ -40,7 +40,7 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
     cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
     parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams"))
     # log-unnormalized posterior & loglik
-    lup_ll <- t(parallel::parApply(cl, q, 1, bmgpm::lupost,
+    lup_ll <- t(parallel::parApply(cl, q, 1, bgphy::lupost,
                                    model, X, tree, priors_tr, tr))
     logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
     loglik <- lup_ll[,"loglik"] # log-likelihood
@@ -50,7 +50,7 @@ IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = T
     on.exit(parallel::stopCluster(cl))
   }else{
     # log-unnormalized posterior & loglik
-    lup_ll <- t(apply(q, 1, bmgpm::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior
+    lup_ll <- t(apply(q, 1, bgphy::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior
     logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
     loglik <- lup_ll[,"loglik"] # log-likelihood
     logq <- apply(q, 1, mvtnorm::dmvnorm,

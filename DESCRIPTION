@@ -1,6 +1,6 @@
-Package: bmgpm
+Package: bgphy
 Title: Bayesian Analysis of Mixed Gaussian Phylogenetic Models
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person("Bayu", "Brahmantio", , "bayubrahmantio@gmail.com", role = c("aut", "cre"))
 Description: Bayesian inference of parameters of mixed Gaussian phylogenetic models with shifts under the GLInv sub-family.

@@ -2,18 +2,18 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 covUpdate <- function(x, S, mean_n, n) {
-    .Call('_bmgpm_covUpdate', PACKAGE = 'bmgpm', x, S, mean_n, n)
+    .Call('_bmgpm_covUpdate', PACKAGE = 'bgphy', x, S, mean_n, n)
 }
 
 fixedMCMC <- function(X, sigma) {
-    .Call('_bmgpm_fixedMCMC', PACKAGE = 'bmgpm', X, sigma)
+    .Call('_bmgpm_fixedMCMC', PACKAGE = 'bgphy', X, sigma)
 }
 
 adaptMCMC <- function(X, S, beta, sigma) {
-    .Call('_bmgpm_adaptMCMC', PACKAGE = 'bmgpm', X, S, beta, sigma)
+    .Call('_bmgpm_adaptMCMC', PACKAGE = 'bgphy', X, S, beta, sigma)
 }
 
 mcmcmove <- function(p, sigma) {
-    .Call('_bmgpm_mcmcmove', PACKAGE = 'bmgpm', p, sigma)
+    .Call('_bmgpm_mcmcmove', PACKAGE = 'bgphy', p, sigma)
 }
 

@@ -10,7 +10,7 @@ prior <- function(model, ...){
 #'   Users can then modify the prior accordingly using functions of class \code{priorpdf}.
 #'   Modifying an \code{mgpm_prior} object is similar to modifying a list,
 #'   in which the users can replace the values in the list with \code{priorpdf} functions
-#'   provided by the \code{bmgpm} package or by the users.
+#'   provided by the \code{bgphy} package or by the users.
 #'
 #' @param model A \code{PCM} object.
 #'
