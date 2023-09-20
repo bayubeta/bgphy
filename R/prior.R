@@ -54,7 +54,7 @@ print.mgpm_prior <- function(priors, ...){
 }
 
 
-#============================= pdfs of prior distributions =============================
+#============================= prior distributions PDF =============================
 
 #' log Probability density functions.
 #'
@@ -189,7 +189,10 @@ print.priorpdf <- function(priorpdf, unit = TRUE, ...){
 
 
 
-#============================= samplers of prior distributions =============================
+
+
+
+#============================= prior distributions RNG =============================
 
 
 #' @export

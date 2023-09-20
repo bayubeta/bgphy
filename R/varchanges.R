@@ -78,7 +78,7 @@ varchange.mgpm_prior <- function(priors){
 
 
 #' @export
-print.transformed <- function(transformed, unit = TRUE){
+print.transformed <- function(transformed, unit = TRUE, ...){
 
   if (unit){
     cat("  ~ ")

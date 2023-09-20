@@ -95,5 +95,14 @@ logsumexp <- function(logW, log = TRUE){
 }
 
 
+modelprint <- function(modeltype, i){
+  stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
+  if (modeltype == "BM"){
+    cat(paste0("BM(sigma_", i, ")"))
+  }
+  if (modeltype == "OU"){
+    cat(paste0("OU(alpha_", i, ", theta_", i, ", sigma_", i, ")"))
+  }
+}
 
 

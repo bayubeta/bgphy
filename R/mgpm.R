@@ -73,7 +73,7 @@ mgpm <- function(model, X, tree, priors, nsample = 10000, initial = NULL, scale 
 
 
 
-print.mgpm_posterior <- function(mgpm){
+print.mgpm_posterior <- function(mgpm, ...){
   # get parameter names
   par_names <- names(mgpm$mean)
 
