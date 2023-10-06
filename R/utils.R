@@ -52,32 +52,101 @@ loadParams <- function(o, p){
 
 
 
-PCMGetParamNames <- function(o){
-  r <- length(attr(o, "regimes"))
+# PCMGetParamNames <- function(o){
+#   r <- length(attr(o, "regimes"))
+#
+#   if (r == 1){
+#     if (attr(o, "modelTypes") == "BM"){
+#       return(names(o)[1:2])
+#     }else{
+#       return(names(o)[1:4])
+#     }
+#   }
+#   else{
+#     parnames <- numeric(attr(o, "p"))
+#     parnames <- parnames[-length(parnames)]
+#
+#     parnames[1] <- names(o)[1]
+#     filled <- 1
+#
+#     for (i in 1:r){
+#       pnames <- sapply(names(o[[i+1]]), FUN = function(x){paste0(x, "_", i)})
+#       parnames[(filled + 1):(filled + length(pnames))] <- pnames
+#       filled <- filled + length(pnames)
+#     }
+#   }
+#
+#   return(parnames)
+# }
 
+
+getParamNames <- function(model){
+  rnames <- attr(model$model, "regimes") # get regime names
+  r <- length(rnames) # get number of regimes
+  modeltypes <- attr(model, "modeltypes") # model types
+
+  # list of parameter names
+  parnames <- c()
+
+  # check if X0 parameter is present
+  if(names(model$mode)[1] == "X0"){parnames[1] <- "X0"}
+
+  # iterate over regimes
   if (r == 1){
-    if (attr(o, "modelTypes") == "BM"){
-      return(names(o)[1:2])
-    }else{
-      return(names(o)[1:4])
-    }
+    parnames <- c(parnames, paramNames(modeltypes))
   }
   else{
-    parnames <- numeric(attr(o, "p"))
-    parnames <- parnames[-length(parnames)]
-
-    parnames[1] <- names(o)[1]
-    filled <- 1
-
     for (i in 1:r){
-      pnames <- sapply(names(o[[i+1]]), FUN = function(x){paste0(x, "_", i)})
-      parnames[(filled + 1):(filled + length(pnames))] <- pnames
-      filled <- filled + length(pnames)
+      parnames <- c(parnames, paramNames(modeltypes[i], i))
     }
   }
-
   return(parnames)
 }
+
+
+paramNames <- function(modeltype, i = NULL){
+  stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
+  if (modeltype == "BM"){
+    if (is.null(i)){
+      return("sigma")
+    }else{
+      return(paste0("sigma_", i))
+    }
+  }
+  if (modeltype == "OU"){
+    if (is.null(i)){
+      return(c("alpha", "theta", "sigma"))
+    }else{
+      return(c(paste0("alpha_", i), paste0("theta_", i),  paste0("sigma_", i)))
+    }
+  }
+}
+
+
+
+modelprint <- function(modeltype, i = NULL){
+  stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
+  if (modeltype == "BM"){
+    if (is.null(i)){
+      cat(paste0("BM(sigma)"))
+    }else{
+      cat(paste0("BM(sigma_", i, ")"))
+    }
+  }
+  if (modeltype == "OU"){
+    if (is.null(i)){
+      cat(paste0("OU(alpha, theta, sigma)"))
+    }else{
+      cat(paste0("OU(alpha_", i, ", theta_", i, ", sigma_", i, ")"))
+    }
+  }
+}
+
+
+
+
+
+
 
 
 logsumexp <- function(logW, log = TRUE){
@@ -93,16 +162,3 @@ logsumexp <- function(logW, log = TRUE){
     return(exp(logsumW))
   }
 }
-
-
-modelprint <- function(modeltype, i){
-  stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
-  if (modeltype == "BM"){
-    cat(paste0("BM(sigma_", i, ")"))
-  }
-  if (modeltype == "OU"){
-    cat(paste0("OU(alpha_", i, ", theta_", i, ", sigma_", i, ")"))
-  }
-}
-
-

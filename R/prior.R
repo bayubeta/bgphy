@@ -24,11 +24,11 @@ prior <- function(model, ...){
 #' priorOU$Theta <- prior_normal(mean = 0, sd = 1)
 #' priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
 #' @export
-setPriors <- function(model){
-  parnames <- PCMGetParamNames(model)
-
-  structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
-}
+# setPriors <- function(model){
+#   parnames <- PCMGetParamNames(model)
+#
+#   structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
+# }
 
 
 #' @export

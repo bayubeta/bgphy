@@ -1,9 +1,10 @@
 
 # create a function to define a model for Global/Mixed models
+#' @export
 setModel <- function(tree, modeltypes, startNodes = NULL){
 
   # check if elements of modeltypes is in {"OU", "BM"}
-
+  stopifnot("Model name not found! Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
   # check if startnodes are not null if the there are regimes
 
   # check startNodes values (numeric & in the tree)
@@ -32,9 +33,39 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
                                            setPartition = TRUE, inplace = FALSE)
   }
 
+
+  # create a list of priors for the parameters
+  # -----------> find the usual (non-informative) priors for alpha, theta, sigma, for different applications.
+  # --->
+
+
   model <- structure(list(model = PCMmodel, tree = tree), class = "bgphy_model")
   attr(model, "modeltypes") <- modeltypes
 
 
   return(model)
+}
+
+
+# print object of class bgphy (the constructed model)
+#' @export
+print.bgphy_model <- function(model){
+  # retrieve regime names
+  rnames <- attr(model$model, "regimes") # get regime names
+  r <- length(rnames) # get number of regimes
+
+  # retrieve model types
+
+  modeltypes <- attr(model, "modeltypes")
+
+  if (r == 1){
+    cat(paste0(rnames, ": "))
+    modelprint(modeltypes)
+  }else{
+    for (i in 1:r){
+      cat(paste0(rnames[i], ": "))
+      modelprint(modeltypes[i], i)
+      cat("\n")
+    }
+  }
 }
