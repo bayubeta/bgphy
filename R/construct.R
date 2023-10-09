@@ -55,7 +55,6 @@ print.bgphy_model <- function(model){
   r <- length(rnames) # get number of regimes
 
   # retrieve model types
-
   modeltypes <- attr(model, "modeltypes")
 
   if (r == 1){

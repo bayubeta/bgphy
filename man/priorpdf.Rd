@@ -7,6 +7,7 @@
 \alias{prior_gamma}
 \alias{prior_halfnormal}
 \alias{prior_halfcauchy}
+\alias{prior_halft}
 \title{log Probability density functions.}
 \usage{
 prior_uniform(min = 0, max = 1)
@@ -18,6 +19,8 @@ prior_gamma(shape, rate = 1, scale = 1/rate)
 prior_halfnormal(sigma)
 
 prior_halfcauchy(sigma)
+
+prior_halft(scale, nu)
 }
 \value{
 A log probability density function of class \code{priorpdf}.

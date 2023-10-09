@@ -142,6 +142,20 @@ prior_halfcauchy <- function(sigma){
   return(f)
 }
 
+#' @rdname priorpdf
+#' @export
+prior_halft <- function(scale, nu){
+  f <- function(x){
+    LaplacesDemon::dhalft(x, scale = scale, nu = nu)
+  }
+
+  class(f) <- c("priorpdf", "halft")
+  attr(f, "bounds") <- c(0, Inf)
+  attr(f, "params") <- stats::setNames(c(scale, nu), c("scale", "nu"))
+
+  return(f)
+}
+
 
 #' @export
 priorPDF <- function(f, bounds){
