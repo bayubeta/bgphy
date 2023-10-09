@@ -280,6 +280,18 @@ priorsampler.halfcauchy <- function(priorpdf){
 }
 
 
+priorsampler.halft <- function(priorpdf){
+  pars <- attr(priorpdf, "params")
+  g <- function(n){
+    LaplacesDemon::rhalft(n, scale = pars[1], nu = pars[2])
+  }
+
+  attr(g, "params") <- attr(priorpdf, "params")
+  attr(g, "class") <- c("sampler", attr(priorpdf, "class"))
+  return(g)
+}
+
+
 #' @export
 prior_sampler <- function(priors){
   UseMethod("prior_sampler")
