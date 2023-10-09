@@ -1,3 +1,4 @@
+# assign a vector of parameters to a model
 setParams <- function(p, model){
   # p: all parameters, excluding Sigmae_x
   # p := c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr, Sigmae_x)
@@ -30,7 +31,7 @@ PCMloglik <- function(X, tree, model, p){
 # log-unnormalized-posterior
 lupost <- function(p, model, X, tree, priors_tr, tr){
 
-  # p: vector of parameters, c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr)
+  # p: vector of parameters, c(X0, alpha_1, theta_1, sigma_1, ..., alpha_r, theta_r, sigma_r)
   # model: PCM model
   # tree: phylo object
   # priors_tr: list of priors pdf on unbounded space
@@ -38,7 +39,7 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
 
   if (is.null(dim(X))){X <- matrix(X, nrow = 1)}
 
-  # change parameters to p_b(ounded),
+  # change parameters to p_b (bounded),
   # because PCMLik (the likelihood) needs parameter values from the original space
   p_b <- tr$g(p)
 
@@ -46,14 +47,14 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
   op <- options(PCMBase.Raise.Lik.Errors = FALSE)
   on.exit(options(op))
 
-  # log likelihood
+  # ===== log likelihood
   loglik <- PCMloglik(X, tree, model, p_b)
 
-  # log priors
+  # ===== log priors
   # calculated in the unbounded space
   log_p <- sum(mapply(function(f, x){f(x)}, priors_tr, p))
 
-  # sum of log-likelihood and log priors
+  # ===== sum of log-likelihood and log priors
   sum_log <- loglik + log_p
 
   # if infinite, return a very low value

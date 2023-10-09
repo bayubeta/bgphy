@@ -29,7 +29,7 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
 
     # update the tree with the regimes information
     tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
-                                           part.regime = setNames(1:r, startNodes),
+                                           part.regime = setNames(rnames, startNodes),
                                            setPartition = TRUE, inplace = FALSE)
   }
 
