@@ -1,16 +1,16 @@
 #' @export
-IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = TRUE){
+IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
   #================ Laplace approximation + Importance sampling ================
 
   # number of parameters
-  d <- length(initial)
+  d <- length(model$priors)
 
   # ================== change of variables routine (to log space)
   ############
   # priors_tr: f_X to f_Y
   # tr: X to Y and vice versa
   # apply change of variables to priors into unbounded space
-  priors_tr <- varchange(priors)
+  priors_tr <- prior_transform(model$priors)
 
   ############
   # define tr, functions to transform parameters
