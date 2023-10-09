@@ -33,14 +33,11 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
                                            setPartition = TRUE, inplace = FALSE)
   }
 
-
-  # create a list of priors for the parameters
-  # -----------> find the usual (non-informative) priors for alpha, theta, sigma, for different applications.
-  # --->
-
-
   model <- structure(list(model = PCMmodel, tree = tree), class = "bgphy_model")
   attr(model, "modeltypes") <- modeltypes
+
+  # set default priors for the parameters
+  model$priors <- defaultPriors(model)
 
 
   return(model)

@@ -1,6 +1,7 @@
 #' @export
 IS <- function(model, X, tree, priors, initial, nsample, scale = 1, parallel = TRUE){
-  #========== Laplace approximation + Importance sampling ==========
+  #================ Laplace approximation + Importance sampling ================
+
   # number of parameters
   d <- length(initial)
 
