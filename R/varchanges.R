@@ -1,14 +1,13 @@
 #============= change of variable methods for constrained parameters =============
 
+# varchange <- function(prior){
+#   UseMethod("varchange")
+# }
 
-varchange <- function(prior){
-  UseMethod("varchange")
-}
 
-
-# bounded under (a,b)
+# transform a prior pdf with bounds (a,b) into the unbounded space (-Inf, Inf)
 #' @export
-varchange.priorpdf <- function(prior){
+prior_transform <- function(prior){
   # retrieve bounds
   bounds <- attr(prior, "bounds")
 
@@ -30,7 +29,6 @@ varchange.priorpdf <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "lowup"
 
       return(fy)
@@ -45,7 +43,6 @@ varchange.priorpdf <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "low"
 
       return(fy)
@@ -59,7 +56,6 @@ varchange.priorpdf <- function(prior){
       }
 
       attributes(fy) <- attributes(prior)[-1]
-      class(fy) <- c("transformed", class(prior))
       attr(fy, "btype") <- "up"
 
       return(fy)
@@ -68,57 +64,10 @@ varchange.priorpdf <- function(prior){
 }
 
 
-#' @export
-varchange.mgpm_prior <- function(priors){
-  priors_tr <- lapply(priors, varchange)
-  attr(priors_tr, "class") <- "mgpm_prior"
-
-  return(priors_tr)
-}
-
-
-#' @export
-print.transformed <- function(transformed, unit = TRUE, ...){
-
-  if (unit){
-    cat("  ~ ")
-  }
-
-  disttype <- class(transformed)[3]
-  btype <- attr(transformed, "btype")
-  bounds <- attr(transformed, "bounds")
-
-  if (btype == "lowup"){
-    a <- bounds[1]
-    b <- bounds[2]
-    cat("logit((")
-    print.priorpdf(transformed, unit = FALSE)
-    cat(" - a)/(", "b - a)),", "\n", sep = "")
-    cat("    a = ", a, ", b = ", b, sep = "")
-  }
-
-  else if (btype == "low"){
-    a <- bounds[1]
-    cat("log(")
-    print.priorpdf(transformed, unit = FALSE)
-    cat(" - a),", "\n")
-    cat("    a =", a, "\n")
-  }
-
-  else{
-    b <- bounds[2]
-    cat("log(b - ", sep = "")
-    print.priorpdf(transformed, unit = FALSE)
-    cat(" - a),", "\n")
-    cat("    a =", a, "\n")
-  }
-}
-
-
 
 trfunc <- function(priors_tr){
   # function that returns a function
-  # to transform a parameter to/from the unbounded space
+  # that transforms a vector of parameters to/from the unbounded space
   # using the information of supports from priors
 
   # priors: priors_tr
@@ -137,8 +86,8 @@ trfunc <- function(priors_tr){
 
 
   # placeholder list for functions
-  # f: transform to unbounded
-  # g: transform from unbounded
+  # f: (a,b) -> (-Inf, Inf) transform from bounded to unbounded
+  # g: (-Inf, Inf) -> (a,b) transform from unbounded to bounded
   f <- stats::setNames(vector("list", npars), parnames)
   g <- stats::setNames(vector("list", npars), parnames)
 
@@ -181,7 +130,6 @@ trfunc <- function(priors_tr){
       g[[i]] <- g_lowup(a, b)
     }
   }
-
 
   # combine transformation functions for each parameter into one
   t <- list()

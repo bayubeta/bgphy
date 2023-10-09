@@ -17,7 +17,7 @@ defaultPriors <- function(model){
   parnames <- getParamNames(model)
 
   # empty list of priors
-  priors <- structure(sapply(parnames, function(x) NULL), class = "bgphy_prior")
+  priors <- structure(sapply(parnames, function(x) NULL), class = "bgphy_priors")
 
   # ---- fill priors with default priors ----
   # for global X_0

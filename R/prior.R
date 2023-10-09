@@ -169,37 +169,37 @@ priorPDF <- function(f, bounds){
 
 # print priorpdf class
 #' @export
-print.priorpdf <- function(priorpdf, unit = TRUE, ...){
-  # print variable name and its distribution
-  classes <- attr(priorpdf, "class")
-  type <- classes[length(classes)]
-
-  if (unit){
-    cat("  ~ ")
-  }
-
-  if (type == "custom"){
-    fname <- attr(priorpdf, "fname")
-    cat(fname)
-  }else{
-    cat(type, "(", sep = "")
-
-    # print the parameter values
-    params <- attr(priorpdf, "params")
-    parnames <- names(params)
-
-    for (i in 1:length(parnames)){
-      cat(parnames[i], " = ", params[[i]], sep = "")
-
-      if (i != length(parnames)){
-        cat(", ")
-      }
-      else{
-        cat(")")
-      }
-    }
-  }
-}
+# print.priorpdf <- function(priorpdf, unit = TRUE, ...){
+#   # print variable name and its distribution
+#   classes <- attr(priorpdf, "class")
+#   type <- classes[length(classes)]
+#
+#   if (unit){
+#     cat("  ~ ")
+#   }
+#
+#   if (type == "custom"){
+#     fname <- attr(priorpdf, "fname")
+#     cat(fname)
+#   }else{
+#     cat(type, "(", sep = "")
+#
+#     # print the parameter values
+#     params <- attr(priorpdf, "params")
+#     parnames <- names(params)
+#
+#     for (i in 1:length(parnames)){
+#       cat(parnames[i], " = ", params[[i]], sep = "")
+#
+#       if (i != length(parnames)){
+#         cat(", ")
+#       }
+#       else{
+#         cat(")")
+#       }
+#     }
+#   }
+# }
 
 
 
