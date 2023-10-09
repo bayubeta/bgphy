@@ -58,14 +58,14 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   res <- res[c("mean", "std_error", "std", "quantiles", "WAIC", "Q", "W")]
 
 
-  class(res) <- "mgpm_posterior"
+  class(res) <- "bgphy_posterior"
 
   return(res)
 }
 
 
 
-print.mgpm_posterior <- function(mgpm, ...){
+print.bgphy_posterior <- function(mgpm, ...){
   # get parameter names
   par_names <- names(mgpm$mean)
 
