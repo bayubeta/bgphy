@@ -1,5 +1,5 @@
 #' @export
-IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
+IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
   #================ Laplace approximation + Importance sampling ================
 
   # number of parameters
@@ -10,7 +10,7 @@ IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
   # priors_tr: f_X to f_Y
   # tr: X to Y and vice versa
   # apply change of variables to priors into unbounded space
-  priors_tr <- prior_transform(model$priors)
+  priors_tr <- lapply(model$priors, prior_transform)
 
   ############
   # define tr, functions to transform parameters
@@ -18,11 +18,14 @@ IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
   # tr$g: from unbounded
   tr <- trfunc(priors_tr)
 
-  # convert initial values into unbounded space
-  initial <- tr$f(initial)
+  # find initial position for optim(), by the mean of the prior distribution
+  init <- colMeans(prior_sampler(model$priors)(1000))
+
+  # transform to unbounded space
+  initial <- tr$f(init)
 
   # simplify lupost as a function of parameters
-  lu_post <- function(p){lupost(p, model, X, tree, priors_tr, tr)[[1]]}
+  lu_post <- function(p){lupost(p, model$model, X, model$tree, priors_tr, tr)[[1]]}
 
   # ================== begin the Laplace approximation routine
   # search posterior mode
@@ -41,21 +44,21 @@ IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
     cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
     parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams"))
     # log-unnormalized posterior & loglik
-    lup_ll <- t(parallel::parApply(cl, q, 1, bgphy::lupost,
-                                   model, X, tree, priors_tr, tr))
+    lup_ll <- t(parallel::parApply(cl, q, 1, lupost,
+                                   model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
     logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
     loglik <- lup_ll[,"loglik"] # log-likelihood
     # log proposal
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
-                               mean = post_mode, sigma = appr_cov, log = TRUE)
+                               mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
     on.exit(parallel::stopCluster(cl))
   }else{
     # log-unnormalized posterior & loglik
-    lup_ll <- t(apply(q, 1, bgphy::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior
+    lup_ll <- t(apply(q, 1, bgphy::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
     logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
     loglik <- lup_ll[,"loglik"] # log-likelihood
     logq <- apply(q, 1, mvtnorm::dmvnorm,
-                  mean = post_mode, sigma = appr_cov, log = TRUE) # log proposal
+                  mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
   }
 
   logW <- logp - logq # log of weights
@@ -81,7 +84,7 @@ IS <- function(model, initial, nsample, scale = 1, parallel = TRUE){
 }
 
 
-
+#' @export
 est_quantiles <- function(Q, W, probs = c(0.025, 0.5, 0.975)){
 
   # number of params

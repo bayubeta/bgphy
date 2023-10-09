@@ -279,7 +279,7 @@ priorsampler.halfcauchy <- function(priorpdf){
   return(g)
 }
 
-
+#' @export
 priorsampler.halft <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -294,12 +294,6 @@ priorsampler.halft <- function(priorpdf){
 
 #' @export
 prior_sampler <- function(priors){
-  UseMethod("prior_sampler")
-}
-
-
-#' @export
-prior_sampler.mgpm_prior <- function(priors){
   p_sampler <- lapply(priors, priorsampler)
   p <- length(p_sampler)
   function(n){

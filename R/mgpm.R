@@ -30,12 +30,12 @@
 #' @export
 mgpm <- function(model, X, tree, priors, nsample = 10000, initial = NULL, scale = 1, parallel = TRUE){
 
-  # initial position, sample from priors if not provided
-  if (is.null(initial)){
-    initial <- prior_sampler(priors)(1)
-  }
-
-  if (is.null(dim(X))){X <- matrix(X, nrow = 1)}
+  # # initial position, sample from priors if not provided
+  # if (is.null(initial)){
+  #   initial <- prior_sampler(priors)(1)
+  # }
+  #
+  # if (is.null(dim(X))){X <- matrix(X, nrow = 1)}
 
   # run inference using importance sampling
   res <- IS(model = model, X = X, tree = tree, priors = priors,
