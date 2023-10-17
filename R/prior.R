@@ -1,54 +1,64 @@
-#' @export
-prior <- function(model, ...){
-  UseMethod("prior")
+# set default priors given the model
+defaultPriors <- function(model){
+  # calculate tree height
+  t_height <- max(ape::node.depth.edgelength(model$tree))
+
+  # retrieve number of regimes
+  rnames <- attr(model$model, "regimes") # get regime names
+  r <- length(rnames) # get number of regimes
+
+  # model types
+  modeltypes <- attr(model, "modeltypes")
+
+  # parameter names
+  parnames <- getParamNames(model)
+
+  # empty list of priors
+  priors <- structure(sapply(parnames, function(x) NULL), class = "bgphy_priors")
+
+  # ---- fill priors with default priors ----
+  # for global X_0
+  priors$X0 <- prior_normal(mean = 0, sd = 10)
+
+  if (r == 1){
+    # for one regime
+    # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
+    s_alpha <- log(2)/(0.05 * t_height * 2)
+    priors$alpha <- prior_halfnormal(sigma = s_alpha)
+
+    # theta, same scale as X_0
+    priors$theta <- prior_normal(mean = 0, sd = 10)
+
+    # sigma > 0, 3*tree_height
+    priors$sigma <- prior_halft(scale = 3*t_height, nu = 1)
+  }
+  else{
+    # for each regime
+    for (i in 1:r){
+      # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
+      s_alpha <- log(2)/(0.05 * t_height * 2)
+      priors[[paste0("alpha_", i)]] <- prior_halfnormal(sigma = s_alpha)
+
+      # theta, same scale as X_0
+      priors[[paste0("theta_", i)]] <- prior_normal(mean = 0, sd = 10)
+
+      # sigma > 0, 3*tree_height
+      s_sigma <- 3*t_height
+      priors[[paste0("sigma_", i)]] <- prior_halft(scale = 3*t_height, nu = 1)
+    }
+  }
+
+  return(priors)
 }
 
-#' Set a prior object given a model of class \code{PCM}.
-#'
-#' This function takes a model of class \code{PCM}, created from \code{PCMBase},
-#'   and outputs a blank prior object of class \code{mgpm_prior}.
-#'   Users can then modify the prior accordingly using functions of class \code{priorpdf}.
-#'   Modifying an \code{mgpm_prior} object is similar to modifying a list,
-#'   in which the users can replace the values in the list with \code{priorpdf} functions
-#'   provided by the \code{bgphy} package or by the users.
-#'
-#' @param model A \code{PCM} object.
-#'
-#' @return A prior object of class \code{mgpm_prior}, which is required for the main function, \code{mgpm}.
-#'
-#' @examples
-#' OU <- PCMBase::PCM("OU")
-#' priorOU <- setPriors(OU)
-#' priorOU$X0 <- prior_normal(mean = 0, sd = 1)
-#' priorOU$H <- prior_halfnormal(sigma = 1)
-#' priorOU$Theta <- prior_normal(mean = 0, sd = 1)
-#' priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
+# print a list of priors of class bgphy_priors
 #' @export
-# setPriors <- function(model){
-#   parnames <- PCMGetParamNames(model)
-#
-#   structure(sapply(parnames, function(x) NULL), class = "mgpm_prior")
-# }
+print.bgphy_priors <- function(bgphy_priors, ...){
+  parnames <- names(bgphy_priors)
 
-
-#' @export
-prior.default <- function(model, ...){
-
-  parnames <- PCMGetParamNames(model)
-
-  structure(sapply(parnames, function(x) NULL), class = "prior")
-
-}
-
-
-#' @export
-print.mgpm_prior <- function(priors, ...){
-
-  varnames <- names(priors)
-
-  for (i in 1:length(varnames)){
-    cat("  ", varnames[i], " ~ ", sep = "")
-    print(priors[[i]], unit = FALSE)
+  for (par in parnames){
+    cat(paste0(par))
+    print(bgphy_priors[[par]])
     cat("\n")
   }
 }
