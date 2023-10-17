@@ -3,6 +3,7 @@
 S3method(print,bgphy_model)
 S3method(print,bgphy_posterior)
 S3method(print,mgpm_prior)
+S3method(print,priorpdf)
 S3method(prior,default)
 S3method(priorsampler,gamma)
 S3method(priorsampler,halfcauchy)

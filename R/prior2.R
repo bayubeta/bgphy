@@ -1,6 +1,3 @@
-
-
-
 # set default priors given the model
 defaultPriors <- function(model){
   # calculate tree height
