@@ -51,17 +51,36 @@ print.bgphy_model <- function(model){
   rnames <- attr(model$model, "regimes") # get regime names
   r <- length(rnames) # get number of regimes
 
+
+  # set spacing size
+  nchars <- sapply(rnames, nchar) # number of characters
+  max_char <- max(c(7, max(nchars)))
+  spaces <- max_char - nchars # number of additional spaces
+
+  nspaces <- 4
+  col_space <- strrep(" ", max_char - 7 + nspaces)
+  def_space <- strrep(" ", nspaces - 1)
+
+
   # retrieve model types
   modeltypes <- attr(model, "modeltypes")
 
+
+  cat(paste0("Regime", col_space,"Model\n"))
+  cat(paste0("------", col_space,"-----\n"))
   if (r == 1){
-    cat(paste0(rnames, ": "))
+    cat(paste0(rnames, strrep(" ", spaces), def_space))
     modelprint(modeltypes)
+    cat("\n")
   }else{
     for (i in 1:r){
-      cat(paste0(rnames[i], ": "))
+      cat(paste0(rnames[i], strrep(" ", spaces[i]), def_space))
       modelprint(modeltypes[i], i)
       cat("\n")
     }
   }
+
+  cat("\n")
+  cat("Priors: \n")
+  print(model$priors)
 }
