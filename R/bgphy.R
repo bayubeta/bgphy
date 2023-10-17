@@ -31,7 +31,7 @@
 bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 
   # run inference using importance sampling
-  res <- IS(model = model$model, X = X, tree = model$tree, nsample = nsample, scale = scale, parallel = parallel)
+  res <- IS(model = model, X = X, nsample = nsample, scale = scale, parallel = parallel)
 
   # matrix of normalized weights
   MW <- matrix(rep(res$W, dim(res$Q)[2]), ncol = dim(res$Q)[2])
@@ -64,19 +64,23 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 }
 
 
-
-print.bgphy_posterior <- function(mgpm, ...){
+#' @export
+print.bgphy_posterior <- function(post, ...){
   # get parameter names
-  par_names <- names(mgpm$mean)
+  par_names <- names(post$mean)
 
   # get quantity names
-  q_names <- c(names(mgpm)[1:3], c("2.5%", "50%", "97.5%"))
+  q_names <- c(names(post)[1:3], c("2.5%", "50%", "97.5%"))
 
   # put information into a matrix
-  M <- matrix(unlist(mgpm[1:4]), nrow = length(par_names))
+  M <- matrix(unlist(post[1:4]), nrow = length(par_names))
   colnames(M) <- q_names
   rownames(M) <- par_names
 
   print(M)
+
+  cat("\n")
+
+  cat(paste0("WAIC: ", post$WAIC))
 }
 
