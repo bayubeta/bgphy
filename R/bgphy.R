@@ -59,6 +59,8 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 
 
   class(res) <- "bgphy_posterior"
+  attr(res, "model") <- model
+  attr(res, "X") <- X
 
   return(res)
 }
@@ -82,5 +84,63 @@ print.bgphy_posterior <- function(post, ...){
   cat("\n")
 
   cat(paste0("WAIC: ", post$WAIC))
+}
+
+
+# posterior predictive check
+#' @export
+post_pred_check <- function(post, nsample = 100, ...){
+  # check if input is of class bgphy_posterior
+  stopifnot("Object is not of class bgphy_posterior" = class(post) == "bgphy_posterior")
+
+  N <- length(post$W)
+
+  # retrieve model
+  model <- attr(post, "model")
+
+  # retrieve data
+  X <- attr(post, "X")
+
+  # number of tips of the tree
+  ntips <- ape::Ntip(model$tree)
+
+  # sample according to weights
+  post_par <- post$Q[sample(1:N, nsample, prob = post$W, replace = TRUE),]
+
+  # empty matric for storing Xrep (posterior predictive values)
+  Xrep <- matrix(nrow = nsample, ncol = ncol(X))
+
+  for (i in 1:nsample){
+    # assign posterior params to model
+    post_model <- setParams(post_par[i,], model$model)
+
+    # simulate data using PCMBase, take only the tips
+    Xrep[i,] <- PCMBase::PCMSim(model$tree, post_model, post_model$X0)[,1:ntips]
+  }
+
+  # ====================== plotting routines ======================
+  # calculate maximum range for y
+  max_y <- max(apply(Xrep, 1, function(x){density(x, n = 10)$y}))
+
+
+  # base
+  par(mar = c(3, 1, 1, 1))
+  plot(density(X[1,]), main = "", xlab = "", ylab = "", yaxt = "n",
+       col = rgb(0,0,0,0), ylim = c(0, 1.1*max_y))
+  grid()
+
+  # posterior predictive densities
+  for (i in 1:nsample){
+    lines(density(Xrep[i,]), col = rgb(0.2,0.2,1,0.07))
+  }
+
+  # data
+  lines(density(X[1,]), lwd = 3, col = rgb(0,0,0.5,1))
+
+  legend("topleft", legend = c("Data", "Simulated data"),
+         col = c(rgb(0,0,0.5,1), rgb(0.2,0.2,1,0.5)),
+         lty = c(1,1), lwd = c(2,1), seg.len = .75,
+         bty = "n")
+
 }
 
