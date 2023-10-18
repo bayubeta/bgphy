@@ -116,9 +116,11 @@ print.bgphy_posterior <- function(post, ...){
 
 # posterior predictive check
 #' @export
-post_pred_check <- function(post, nsample = 100, ...){
+post_pred_check <- function(post, nsim = 100){
   # check if input is of class bgphy_posterior
-  stopifnot("Object is not of class bgphy_posterior" = class(post) == "bgphy_posterior")
+  stopifnot("Object is not of class bgphy_posterior." = class(post) == "bgphy_posterior")
+  # check if nsample is valid
+  stopifnot("Invalid value of nsample." = is.numeric(nsim) & ((abs(nsim - round(nsim)) < .Machine$double.eps^0.5)) & (nsim > 0))
 
   N <- length(post$W)
 
@@ -132,12 +134,12 @@ post_pred_check <- function(post, nsample = 100, ...){
   ntips <- ape::Ntip(model$tree)
 
   # sample according to weights
-  post_par <- post$Q[sample(1:N, nsample, prob = post$W, replace = TRUE),]
+  post_par <- post$Q[sample(1:N, nsim, prob = post$W, replace = TRUE),]
 
   # empty matric for storing Xrep (posterior predictive values)
-  Xrep <- matrix(nrow = nsample, ncol = ncol(X))
+  Xrep <- matrix(nrow = nsim, ncol = ncol(X))
 
-  for (i in 1:nsample){
+  for (i in 1:nsim){
     # assign posterior params to model
     post_model <- setParams(post_par[i,], model$model)
 
@@ -157,7 +159,7 @@ post_pred_check <- function(post, nsample = 100, ...){
   grid()
 
   # posterior predictive densities
-  for (i in 1:nsample){
+  for (i in 1:nsim){
     lines(density(Xrep[i,]), col = rgb(0.2,0.2,1,0.07))
   }
 
