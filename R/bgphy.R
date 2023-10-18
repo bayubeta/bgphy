@@ -30,6 +30,41 @@
 #' @export
 bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 
+  # ============ make sure model is proper
+  parnames <- getParamNames(model)
+  priors_class <- sapply(model$priors, function(x){class(x)[1]})
+
+  # check if all priors are of class priorpdf
+  stopifnot("Priors are not of class priorpdf." = all(priors_class == "priorpdf"))
+
+  # check if there is a prior for each parameter
+  stopifnot("Priors are not defined for all parameters." = length(parnames) == length(priors_class))
+
+  # check if X is a numeric matrix
+  stopifnot("X is not a numeric matrix." = is.numeric(X) & is.matrix(X))
+
+  # check if X has the correct dimension
+  # number of tips
+  ntips <- ape::Ntip(model$tree)
+  stopifnot("X is not of a correct dimension." = all(dim(X) == c(1, ntips)))
+
+  # match tips' names with X names
+  stopifnot("Names on the tips do not match column names of X." = all(colnames(X) == model$tree$tip.label))
+
+  # make sure nsample integer > 0
+  stopifnot("Invalid value of nsample." = is.numeric(nsample) & ((abs(nsample - round(nsample)) < .Machine$double.eps^0.5)) & (nsample > 0))
+
+  # make sure scale > 0
+  stopifnot("Invalid value of scale" = is.numeric(scale) & (scale > 0))
+
+  # make sure parallel is boolean
+  stopifnot("Invalid value of parallel" = is.logical(parallel))
+
+
+
+  # ---------------------------- start inference ----------------------------
+
+
   # run inference using importance sampling
   res <- IS(model = model, X = X, nsample = nsample, scale = scale, parallel = parallel)
 
