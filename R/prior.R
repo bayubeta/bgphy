@@ -16,7 +16,7 @@ defaultPriors <- function(model){
   # empty list of priors
   priors <- structure(sapply(parnames, function(x) NULL), class = "bgphy_priors")
 
-  # ---- fill priors with default priors ----
+  # ---------------- fill priors with default priors ----------------
   # for global X_0
   priors$X0 <- prior_normal(mean = 0, sd = 10)
 

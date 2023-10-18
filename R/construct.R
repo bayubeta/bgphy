@@ -3,12 +3,15 @@
 #' @export
 setModel <- function(tree, modeltypes, startNodes = NULL){
 
+  # check if tree is of class phylo
+  stopifnot("Tree must be of class phylo." = class(tree) != "phylo")
   # check if elements of modeltypes is in {"OU", "BM"}
-  stopifnot("Model name not found! Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
+  stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
   # check if startnodes are not null if the there are regimes
-
+  stopifnot("Starting nodes for regimes are not specified." = (length(modeltypes) >= 1) & is.null(startNodes))
   # check startNodes values (numeric & in the tree)
-
+  stopifnot("startNodes must be numeric values." = !is.numeric(startNodes))
+  stopifnot("startNodes are not in the tree." = any(is.na(match(startNodes, tree$edge))))
 
 
   # create a PCM object given the tree and specified model and regimes
