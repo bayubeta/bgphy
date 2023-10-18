@@ -2,35 +2,34 @@
 #'
 #' The main function to run Bayesian inference of mixed Gaussian phylogenetic models.
 #'
-#' @param model An object of class \code{PCM}.
-#' @param X Measurements on tips.
-#' @param tree A phylogenetic tree of class \code{phylo}.
-#' @param priors A prior object of class \code{mgpm_prior}.
+#' @param model An object of class \code{bgphy_model}, which is created by [bgphy::setModel()] function.
+#' @param X Measurements on tips. \code{X} needs to be a matrix of dimension \code{(1 x N)}, where \code{N} is the number of tips on the tree in \code{model$tree}.
+#'   The column names of \code{X} needs to match the names on the tips.
 #' @param nsample Number of random draws to be made.
 #' @param scale The scale parameter to determine the scale of the approximated covariance matrix
 #'   obtained from the Laplace's approximation of the posterior distribution. The default is 1.
 #' @param parallel Utilization of parallel processing. Defaults to \code{TRUE}.
 #'
 #' @return A list of class \code{mgpm_posterior} which contains:
-#' * `E`:   Expected value of the posterior distribution.
-#' * `Q`:   Values used to calculate the expected value using Importance Sampling.
+#' * `mean`:   Expected value of the posterior distribution.
+#' * `std_error`:   Estimated standard error of the posterior mean.
+#' * `std`:   Estimated standard deviation of the posterior distribution.
+#' * `quantiles`:  Estimated quantiles.
+#' * `Q`:   Drawn values from the proposal distribution (Multivariate Normal).
 #' * `W`:   Normalized weights for each row of `Q`.
 #' * `WAIC`:   Widely Available Criterion Score.
 #'
 #' @examples
-#' # OU <- PCMBase::PCM("OU")
-#' # priorOU <- setPriors(OU)
-#' # priorOU$X0 <- prior_normal(mean = 0, sd = 1)
-#' # priorOU$H <- prior_halfnormal(sigma = 1)
-#' # priorOU$Theta <- prior_normal(mean = 0, sd = 1)
-#' # priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
-#' #
-#' # post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
+#' \dontrun{
+#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
+#' post <- bgphy(OU, X, nsample = 1000)
+#' }
 #'
 #' @export
 bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 
-  # ============ make sure model is proper
+  # ------------------------- perform checks on inputs -------------------------
   parnames <- getParamNames(model)
   priors_class <- sapply(model$priors, function(x){class(x)[1]})
   # check if all priors are of class priorpdf
@@ -55,8 +54,6 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 
 
   # ---------------------------- start inference ----------------------------
-
-
   # run inference using importance sampling
   res <- IS(model = model, X = X, nsample = nsample, scale = scale, parallel = parallel)
 
@@ -93,6 +90,21 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 }
 
 
+
+#' Print posterior information
+#'
+#' This function prints the information of a posterior distribution on the console.
+#'
+#' @param post An object of class \code{bgphy_posterior}.
+#'
+#' @examples
+#' \dontrun{
+#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
+#' post <- bgphy(OU, X, nsample = 1000)
+#' print(post)
+#' }
+#'
 #' @export
 print.bgphy_posterior <- function(post, ...){
   # get parameter names
@@ -114,7 +126,23 @@ print.bgphy_posterior <- function(post, ...){
 }
 
 
-# posterior predictive check
+
+
+#' Posterior predictive check
+#'
+#' Plots a number of density curves drawn from the posterior predictive distribution and the data density curve.
+#'
+#' @param post An object of class \code{bgphy_posterior}.
+#' @param nsim Number of simulations, or draws from the posterior predictive distribution.
+#'
+#' @examples
+#' \dontrun{
+#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
+#' post <- bgphy(OU, X, nsample = 1000)
+#' post_pred_check(post)
+#' }
+#'
 #' @export
 post_pred_check <- function(post, nsim = 100){
   # check if input is of class bgphy_posterior

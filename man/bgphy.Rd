@@ -7,9 +7,10 @@
 bgphy(model, X, nsample = 10000, scale = 1, parallel = TRUE)
 }
 \arguments{
-\item{model}{An object of class \code{PCM}.}
+\item{model}{An object of class \code{bgphy_model}, which is created by \code{\link[=setModel]{setModel()}} function.}
 
-\item{X}{Measurements on tips.}
+\item{X}{Measurements on tips. \code{X} needs to be a matrix of dimension \code{(1 x N)}, where \code{N} is the number of tips on the tree in \code{model$tree}.
+The column names of \code{X} needs to match the names on the tips.}
 
 \item{nsample}{Number of random draws to be made.}
 
@@ -17,16 +18,15 @@ bgphy(model, X, nsample = 10000, scale = 1, parallel = TRUE)
 obtained from the Laplace's approximation of the posterior distribution. The default is 1.}
 
 \item{parallel}{Utilization of parallel processing. Defaults to \code{TRUE}.}
-
-\item{tree}{A phylogenetic tree of class \code{phylo}.}
-
-\item{priors}{A prior object of class \code{mgpm_prior}.}
 }
 \value{
 A list of class \code{mgpm_posterior} which contains:
 \itemize{
-\item \code{E}:   Expected value of the posterior distribution.
-\item \code{Q}:   Values used to calculate the expected value using Importance Sampling.
+\item \code{mean}:   Expected value of the posterior distribution.
+\item \code{std_error}:   Estimated standard error of the posterior mean.
+\item \code{std}:   Estimated standard deviation of the posterior distribution.
+\item \code{quantiles}:  Estimated quantiles.
+\item \code{Q}:   Drawn values from the proposal distribution (Multivariate Normal).
 \item \code{W}:   Normalized weights for each row of \code{Q}.
 \item \code{WAIC}:   Widely Available Criterion Score.
 }
@@ -35,13 +35,10 @@ A list of class \code{mgpm_posterior} which contains:
 The main function to run Bayesian inference of mixed Gaussian phylogenetic models.
 }
 \examples{
-# OU <- PCMBase::PCM("OU")
-# priorOU <- setPriors(OU)
-# priorOU$X0 <- prior_normal(mean = 0, sd = 1)
-# priorOU$H <- prior_halfnormal(sigma = 1)
-# priorOU$Theta <- prior_normal(mean = 0, sd = 1)
-# priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
-#
-# post <- mgpm(OU, XOU[1,], lizardTree, priorOU, 100)
+\dontrun{
+OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
+post <- bgphy(OU, X, nsample = 1000)
+}
 
 }
