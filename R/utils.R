@@ -1,14 +1,17 @@
 # ========================== helper functions ==========================
 
-
+# logit functions
 logit <- function(u){
   log(u/(1 - u))
 }
 
+# inverse logit
 invlogit <- function(v){
   1/(1 + exp(-v))
 }
 
+
+# load parameters into a PCM model
 loadParams <- function(o, p){
   # load parameters into a PCM model
   # similar functionality to PCMBase::PCMParamLoadOrStore, load = TRUE
@@ -50,36 +53,7 @@ loadParams <- function(o, p){
   return(o)
 }
 
-
-
-# PCMGetParamNames <- function(o){
-#   r <- length(attr(o, "regimes"))
-#
-#   if (r == 1){
-#     if (attr(o, "modelTypes") == "BM"){
-#       return(names(o)[1:2])
-#     }else{
-#       return(names(o)[1:4])
-#     }
-#   }
-#   else{
-#     parnames <- numeric(attr(o, "p"))
-#     parnames <- parnames[-length(parnames)]
-#
-#     parnames[1] <- names(o)[1]
-#     filled <- 1
-#
-#     for (i in 1:r){
-#       pnames <- sapply(names(o[[i+1]]), FUN = function(x){paste0(x, "_", i)})
-#       parnames[(filled + 1):(filled + length(pnames))] <- pnames
-#       filled <- filled + length(pnames)
-#     }
-#   }
-#
-#   return(parnames)
-# }
-
-
+# get parameter names from model
 getParamNames <- function(model){
   rnames <- attr(model$model, "regimes") # get regime names
   r <- length(rnames) # get number of regimes
@@ -103,7 +77,7 @@ getParamNames <- function(model){
   return(parnames)
 }
 
-
+# print parameter names given a model type (optionally with index)
 paramNames <- function(modeltype, i = NULL){
   stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
   if (modeltype == "BM"){
@@ -123,7 +97,7 @@ paramNames <- function(modeltype, i = NULL){
 }
 
 
-
+# print model with its parameters (optionally with index)
 modelprint <- function(modeltype, i = NULL){
   stopifnot("Model name not found! Choose between BM or OU." = modeltype %in% c("BM", "OU"))
   if (modeltype == "BM"){
@@ -143,12 +117,7 @@ modelprint <- function(modeltype, i = NULL){
 }
 
 
-
-
-
-
-
-
+# log-sum-exp function
 logsumexp <- function(logW, log = TRUE){
   # calculate the (log) of sum of W from logW data
   # log(sum(W)) = log(W[1] + ... + W[N])
