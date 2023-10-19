@@ -1,12 +1,6 @@
 #============= change of variable methods for constrained parameters =============
 
-# varchange <- function(prior){
-#   UseMethod("varchange")
-# }
-
-
 # transform a prior pdf with bounds (a,b) into the unbounded space (-Inf, Inf)
-#' @export
 prior_transform <- function(prior){
   # retrieve bounds
   bounds <- attr(prior, "bounds")
@@ -62,7 +56,6 @@ prior_transform <- function(prior){
     }
   }
 }
-
 
 
 trfunc <- function(priors_tr){
@@ -152,8 +145,6 @@ trfunc <- function(priors_tr){
 }
 
 
-
-
 # transformation functions for the data
 # X to Y = f(X) or Y to X = f(Y)
 f_lowup <- function(a, b){
@@ -204,10 +195,5 @@ g_up <- function(b){
     b - exp(y)
   }
 }
-
-
-
-
-
 
 
