@@ -21,14 +21,15 @@ An object of class \code{bgphy_model}, which contains:
 \item \code{tree}: The phylogenetic tree. If there are multiple regimes, the tree is converted into \code{PCMTree} class.
 \item \code{priors}: A list of default priors. Each of them is of class \code{priorpdf}.
 }
-
-#' @examples
+}
+\description{
+Defines a Gaussian phylogenetic model.
+}
+\examples{
 \dontrun{
 modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
 startNodes <- setNames(c(101, 135), c("ancestral", "new"))
 OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
 }
-}
-\description{
-Defines a Gaussian phylogenetic model.
+
 }
