@@ -29,14 +29,11 @@ A log probability density function of class \code{priorpdf}.
 This is a collection of log probability density functions used for the prior object of class \code{mgpm_prior}.
 }
 \examples{
-\dontrun{
-modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-# set custom priors
-OU$priors$X0 <- prior_normal(mean = 0, sd = 2)
-OU$priors$alpha <- prior_halfnormal(sigma = 3)
-OU$priors$theta_1 <- prior_normal(mean = 2, sd = 2)
-}
+OU <- PCMBase::PCM("OU")
+priorOU <- setPriors(OU)
+priorOU$X0 <- prior_normal(mean = 0, sd = 1)
+priorOU$H <- prior_halfnormal(sigma = 1)
+priorOU$Theta <- prior_normal(mean = 0, sd = 1)
+priorOU$Sigma_x <- prior_halfnormal(sigma = 1)
 
 }
