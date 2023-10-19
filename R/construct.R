@@ -1,5 +1,24 @@
-
-# create a function to define a model for Global/Mixed models
+#' Set a Gaussian phylogenetic model
+#'
+#' Defines a Gaussian phylogenetic model.
+#'
+#' @param tree A phylogenetic tree of class `phylo`.
+#' @param modeltypes A named vector of model types. The elements define the model types and names define the regime names.
+#'    Currently only `"BM"` and `"OU"` are available as model types.
+#' @param startNodes A named vector of nodes. Each element determines the start of a regime on the tree.
+#'
+#' @returns An object of class `bgphy_model`, which contains:
+#' * `model`: The PCM model as defined by [PCMBase].
+#' * `tree`: The phylogenetic tree. If there are multiple regimes, the tree is converted into `PCMTree` class.
+#' * `priors`: A list of default priors. Each of them is of class `priorpdf`.
+#'
+#' @examples
+#' \dontrun{
+#' modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
+#' startNodes <- setNames(c(101, 135), c("ancestral", "new"))
+#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' }
+#'
 #' @export
 setModel <- function(tree, modeltypes, startNodes = NULL){
 
@@ -8,11 +27,12 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
   # check if elements of modeltypes is in {"OU", "BM"}
   stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
   # check if startnodes are not null if the there are regimes
-  stopifnot("Starting nodes for regimes are not specified." = (length(modeltypes) >= 1) & (!is.null(startNodes)))
-  # check startNodes values (numeric & in the tree)
-  stopifnot("startNodes must be numeric values." = is.numeric(startNodes))
-  stopifnot("startNodes are not in the tree." = !any(is.na(match(startNodes, tree$edge))))
-
+  if (length(modeltypes) > 1){
+    stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
+    # check startNodes values (numeric & in the tree)
+    stopifnot("startNodes must be numeric values." = is.numeric(startNodes))
+    stopifnot("startNodes are not in the tree." = !any(is.na(match(startNodes, tree$edge))))
+  }
 
   # create a PCM object given the tree and specified model and regimes
   r <- length(modeltypes) # number of regimes
@@ -48,6 +68,20 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
 
 
 # print object of class bgphy (the constructed model)
+#' Print model information
+#'
+#' This function prints the information of a model object of class `bgphy_model` on the console.
+#'
+#' @param post An object of class \code{bgphy_model}.
+#'
+#' @examples
+#' \dontrun{
+#' modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
+#' startNodes <- setNames(c(101, 135), c("ancestral", "new"))
+#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' print(OU)
+#' }
+#'
 #' @export
 print.bgphy_model <- function(model){
   # retrieve regime names

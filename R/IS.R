@@ -1,4 +1,4 @@
-#' @export
+# function to run the Importance Sampling method
 IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
   #================ Laplace approximation + Importance sampling ================
 
@@ -85,7 +85,6 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
 
 
 # function to estimate quantiles given sample and weights
-#' @export
 est_quantiles <- function(Q, W, probs = c(0.025, 0.5, 0.975)){
 
   # number of params
