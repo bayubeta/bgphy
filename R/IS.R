@@ -18,23 +18,31 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
   # tr$g: from unbounded
   tr <- trfunc(priors_tr)
 
-  # find initial position for optim(), by the mean of the prior distribution
-  init <- colMeans(prior_sampler(model$priors)(1000))
 
-  # transform to unbounded space
-  initial <- tr$f(init)
+  repeat{ # in case of singular Hessian, repeat from different starting point
+    # find initial position for optim(), by the mean of the prior distribution
+    init <- apply(prior_sampler(model$priors)(1000), 2, median) # set initial value as median of samples drawn from priors
 
-  # simplify lupost as a function of parameters
-  lu_post <- function(p){lupost(p, model$model, X, model$tree, priors_tr, tr)[[1]]}
+    # transform to unbounded space
+    initial <- tr$f(init)
 
-  # ================== begin the Laplace approximation routine
-  # search posterior mode
-  optRes <- stats::optim(par = initial, fn = lu_post, method = "BFGS",
-                         control = list(fnscale=-1), hessian = TRUE)
-  # posterior mode (log space)
-  post_mode <- optRes$par
-  # approximated covariance, scale to focus on the important area around mode
-  appr_cov <- solve(-optRes$hessian)*scale
+    # simplify lupost as a function of parameters
+    lu_post <- function(p){lupost(p, model$model, X, model$tree, priors_tr, tr)[[1]]}
+
+    # ================== begin the Laplace approximation routine
+    # search posterior mode
+    optRes <- stats::optim(par = initial, fn = lu_post, method = "BFGS",
+                           control = list(fnscale=-1), hessian = TRUE)
+    # posterior mode (log space)
+    post_mode <- optRes$par
+    # approximated covariance, scale to focus on the important area around mode
+    appr_cov <- try(solve(-optRes$hessian)*scale, silent = TRUE)
+
+    if (all(class(appr_cov) != "try-error")){
+      break()
+    }
+  }
+
 
   # ================== begin the (self-normalized) Importance sampling routine
   # sample from the normal distribution
