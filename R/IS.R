@@ -46,17 +46,17 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
     # log-unnormalized posterior & loglik
     lup_ll <- t(parallel::parApply(cl, q, 1, lupost,
                                    model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
-    logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
-    loglik <- lup_ll[,"loglik"] # log-likelihood
+    logp <- lup_ll[,1] # log-unnormalized posterior
+    loglik <- lup_ll[,2] # log-likelihood
     # log proposal
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
                                mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
     on.exit(parallel::stopCluster(cl))
   }else{
     # log-unnormalized posterior & loglik
-    lup_ll <- t(apply(q, 1, bgphy::lupost, model, X, tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
-    logp <- lup_ll[,"log_u_post"] # log-unnormalized posterior
-    loglik <- lup_ll[,"loglik"] # log-likelihood
+    lup_ll <- t(apply(q, 1, lupost, model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
+    logp <- lup_ll[,1] # log-unnormalized posterior
+    loglik <- lup_ll[,2] # log-likelihood
     logq <- apply(q, 1, mvtnorm::dmvnorm,
                   mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
   }
