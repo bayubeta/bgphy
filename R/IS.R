@@ -50,7 +50,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
 
   if (parallel){
     cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
-    parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams"))
+    parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams"), envir = environment())
     # log-unnormalized posterior & loglik
     lup_ll <- t(parallel::parApply(cl, q, 1, lupost,
                                    model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood

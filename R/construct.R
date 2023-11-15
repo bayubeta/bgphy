@@ -22,17 +22,17 @@
 #' @export
 setModel <- function(tree, modeltypes, startNodes = NULL){
 
-  # check if tree is of class phylo
-  stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
-  # check if elements of modeltypes is in {"OU", "BM"}
-  stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
-  # check if startnodes are not null if the there are regimes
-  if (length(modeltypes) > 1){
-    stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
-    # check startNodes values (numeric & in the tree)
-    stopifnot("startNodes must be numeric values." = is.numeric(startNodes))
-    stopifnot("startNodes are not in the tree." = !any(is.na(match(startNodes, tree$edge))))
-  }
+  # # check if tree is of class phylo
+  # stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
+  # # check if elements of modeltypes is in {"OU", "BM"}
+  # stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
+  # # check if startnodes are not null if the there are regimes
+  # if (length(modeltypes) > 1){
+  #   stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
+  #   # check startNodes values (numeric & in the tree)
+  #   stopifnot("startNodes must be numeric values." = is.numeric(startNodes))
+  #   stopifnot("startNodes are not in the tree." = !any(is.na(match(startNodes, tree$edge))))
+  # }
 
   # create a PCM object given the tree and specified model and regimes
   r <- length(modeltypes) # number of regimes
@@ -52,7 +52,7 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
 
     # update the tree with the regimes information
     tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
-                                           part.regime = setNames(rnames, startNodes),
+                                           part.regime = setNames(names(startNodes), startNodes),
                                            setPartition = TRUE, inplace = FALSE)
   }
 

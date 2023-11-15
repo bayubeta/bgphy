@@ -7,7 +7,7 @@ Description: Bayesian inference of parameters of mixed Gaussian phylogenetic mod
 License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: 
     ape,
     extraDistr,
