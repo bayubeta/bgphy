@@ -22,29 +22,33 @@ defaultPriors <- function(model){
 
   if (r == 1){
     # for one regime
-    # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
-    s_alpha <- log(2)/(0.05 * t_height * 2)
-    priors$alpha <- prior_halfnormal(sigma = s_alpha)
-
-    # theta, same scale as X_0
-    priors$theta <- prior_normal(mean = 0, sd = 10)
-
     # sigma > 0, 3*tree_height
     priors$sigma <- prior_halft(scale = 3*t_height, nu = 1)
+
+    if (modeltypes == "OU"){
+      # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
+      s_alpha <- log(2)/(0.05 * t_height * 2)
+      priors$alpha <- prior_halfnormal(sigma = s_alpha)
+
+      # theta, same scale as X_0
+      priors$theta <- prior_normal(mean = 0, sd = 10)
+    }
   }
   else{
     # for each regime
     for (i in 1:r){
-      # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
-      s_alpha <- log(2)/(0.05 * t_height * 2)
-      priors[[paste0("alpha_", i)]] <- prior_halfnormal(sigma = s_alpha)
-
-      # theta, same scale as X_0
-      priors[[paste0("theta_", i)]] <- prior_normal(mean = 0, sd = 10)
-
       # sigma > 0, 3*tree_height
       s_sigma <- 3*t_height
       priors[[paste0("sigma_", i)]] <- prior_halft(scale = 3*t_height, nu = 1)
+
+      if (modeltypes[i] == "OU"){
+        # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
+        s_alpha <- log(2)/(0.05 * t_height * 2)
+        priors[[paste0("alpha_", i)]] <- prior_halfnormal(sigma = s_alpha)
+
+        # theta, same scale as X_0
+        priors[[paste0("theta_", i)]] <- prior_normal(mean = 0, sd = 10)
+      }
     }
   }
 
