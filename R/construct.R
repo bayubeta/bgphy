@@ -24,17 +24,35 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 
   r <- length(regime_names) # number of regimes
 
-  # # check if tree is of class phylo
-  # stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
-  # # check if elements of modeltypes is in {"OU", "BM"}
-  # stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
-  # # check if startnodes are not null if the there are regimes
-  # if (length(modeltypes) > 1){
-  #   stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
-  #   # check startNodes values (numeric & in the tree)
-  #   stopifnot("startNodes must be numeric values." = is.numeric(startNodes))
-  #   stopifnot("startNodes are not in the tree." = !any(is.na(match(startNodes, tree$edge))))
-  # }
+  # check if tree is of class phylo
+  stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
+  # check if elements of modeltypes is in {"OU", "BM"}
+  stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
+  # check if startnodes are not null if the there are regimes
+  if (length(modeltypes) > 1){
+    stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
+
+    # startNodes must be a list
+    # names on the list must match regime_names
+    stopifnot("startNodes must be a named list whose names match regime_names." =
+                (is.list(startNodes))
+              & (all(names(startNodes) %in% regime_names)))
+
+    # number of regimes must match number of elements in startNodes
+    stopifnot("startNodes must be specified for each regime" = (r == length(startNodes)))
+
+    # check startNodes values (numeric & in the tree)
+    stopifnot("startNodes must be numeric values." = (is.numeric(unlist(startNodes))))
+    total_nodes <- 2*tree$Nnode + 1
+    stopifnot("startNodes are not in the tree." = (all(0<unlist(startNodes))) &
+                (all(unlist(startNodes) <= total_nodes)))
+
+    # ancestral node needs to be included
+    an <- ape::Ntip(tree) + 1
+    if (!(an %in% unlist(startNodes))){
+      stop(paste0("Ancestral node (", an, ") must be included in the ancestral regime."))
+    }
+  }
 
   # create a PCM object given the tree and specified model and regimes
   r <- length(modeltypes) # number of regimes
