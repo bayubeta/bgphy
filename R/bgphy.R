@@ -35,7 +35,7 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   # check if all priors are of class priorpdf
   stopifnot("Priors are not of class priorpdf." = all(priors_class == "priorpdf"))
   # check if there is a prior for each parameter
-  stopifnot("Priors are not defined for all parameters." = length(parnames) == length(priors_class))
+  # stopifnot("Priors are not defined for all parameters." = length(parnames) == length(priors_class))
   # check if X is a numeric matrix
   stopifnot("X is not a numeric matrix." = is.numeric(X) & is.matrix(X))
   # check if X has the correct dimension
@@ -122,7 +122,7 @@ print.bgphy_posterior <- function(post, ...){
 
   cat("\n")
 
-  cat(paste0("WAIC: ", post$WAIC))
+  cat(paste0("WAIC: ", post$WAIC, "\n"))
 }
 
 
