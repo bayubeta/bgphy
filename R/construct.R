@@ -64,7 +64,13 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
   r <- length(modeltypes) # number of regimes
   if (r == 1){
     # Global model
+    # Define the model in PCMBase
     PCMmodel <- PCMBase::PCM(model = modeltypes, regimes = regime_names)
+
+    # Convert the tree into PCMTree object. Since only 1 regime, set from the earliest node.
+    tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
+                                           part.regime = stats::setNames(regime_names, an),
+                                           setPartition = TRUE, inplace = FALSE)
   }else{
     # Mixed model
     # retrieve the names of regimes
@@ -101,6 +107,10 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 #'
 #' @examples
 #' \dontrun{
+#' # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' print(OU1)
+#'
 #  # mixed, BM to OU
 #' BMOU <- setModel(tree = lizardTree,
 #'                  regime_names = c("Ancestral", "New"),
@@ -151,8 +161,8 @@ print.bgphy_model <- function(model){
 
 
 
-# plot tree with multiple regimes (of class PCMTree)
-#' Plot a tree with multiple regimes.
+# Plot a tree of class PCMTree
+#' Plot a tree with regimes configuration.
 #'
 #' Plots the tree object of class `PCMTree`.
 #'
@@ -160,6 +170,9 @@ print.bgphy_model <- function(model){
 #'
 #' @examples
 #' \dontrun{
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' plot(OU1$tree)
+#'
 #  # mixed, BM to OU
 #' BMOU <- setModel(tree = lizardTree,
 #'                  regime_names = c("Ancestral", "New"),
