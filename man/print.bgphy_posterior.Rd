@@ -14,10 +14,21 @@ This function prints the information of a posterior distribution on the console.
 }
 \examples{
 \dontrun{
-OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
-post <- bgphy(OU, X, nsample = 1000)
-print(post)
+OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+post_OU <- bgphy(OU1,
+                 matrix(XOU[1,], nrow = 1,
+                        dimnames = list(NULL, colnames(XOU))))
+print(post_OU)
+
+# mixed, OU to OU
+OUOU <- setModel(tree = lizardTree,
+                 regime_names = c("Ancestral", "New"),
+                 modeltypes = c("OU", "OU"),
+                 startNodes = list(Ancestral = c(101), New = c(135)))
+post_OUOU <- bgphy(BMOU,
+                   matrix(XMixedOU[1,], nrow = 1,
+                          dimnames = list(NULL, colnames(XMixedOU))))
+print(post_OUOU)
 }
 
 }

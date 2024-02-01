@@ -21,9 +21,20 @@
 #'
 #' @examples
 #' \dontrun{
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
-#' post <- bgphy(OU, X, nsample = 1000)
+#  # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' post_OU <- bgphy(OU1,
+#'                  matrix(XOU[1,], nrow = 1,
+#'                         dimnames = list(NULL, colnames(XOU))))
+#'
+#' # mixed, OU to OU
+#' OUOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("OU", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' post_OUOU <- bgphy(BMOU,
+#'                    matrix(XMixedOU[1,], nrow = 1,
+#'                           dimnames = list(NULL, colnames(XMixedOU))))
 #' }
 #'
 #' @export
@@ -50,7 +61,6 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   stopifnot("Invalid value of scale" = is.numeric(scale) & (scale > 0))
   # make sure parallel is boolean
   stopifnot("Invalid value of parallel" = is.logical(parallel))
-
 
 
   # ---------------------------- start inference ----------------------------
@@ -99,10 +109,22 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 #'
 #' @examples
 #' \dontrun{
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
-#' post <- bgphy(OU, X, nsample = 1000)
-#' print(post)
+#  # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' post_OU <- bgphy(OU1,
+#'                  matrix(XOU[1,], nrow = 1,
+#'                         dimnames = list(NULL, colnames(XOU))))
+#' print(post_OU)
+#'
+#' # mixed, OU to OU
+#' OUOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("OU", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' post_OUOU <- bgphy(BMOU,
+#'                    matrix(XMixedOU[1,], nrow = 1,
+#'                           dimnames = list(NULL, colnames(XMixedOU))))
+#' print(post_OUOU)
 #' }
 #'
 #' @export
@@ -137,10 +159,22 @@ print.bgphy_posterior <- function(post, ...){
 #'
 #' @examples
 #' \dontrun{
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-#' X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
-#' post <- bgphy(OU, X, nsample = 1000)
-#' post_pred_check(post)
+#  # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' post_OU <- bgphy(OU1,
+#'                  matrix(XOU[1,], nrow = 1,
+#'                         dimnames = list(NULL, colnames(XOU))))
+#' post_pred_check(post_OU)
+#'
+#' # mixed, OU to OU
+#' OUOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("OU", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' post_OUOU <- bgphy(BMOU,
+#'                    matrix(XMixedOU[1,], nrow = 1,
+#'                           dimnames = list(NULL, colnames(XMixedOU))))
+#' post_pred_check(post_OUOU)
 #' }
 #'
 #' @export
@@ -177,27 +211,27 @@ post_pred_check <- function(post, nsim = 100){
 
   # ====================== plotting routines ======================
   # calculate maximum range for y
-  max_y <- max(apply(Xrep, 1, function(x){density(x, n = 10)$y}))
+  max_y <- max(apply(Xrep, 1, function(x){stats::density(x, n = 10)$y}))
 
 
   # base
-  par(mar = c(3, 1, 1, 1))
-  plot(density(X[1,]), main = "", xlab = "", ylab = "", yaxt = "n",
-       col = rgb(0,0,0,0), ylim = c(0, 1.1*max_y))
-  grid()
+  graphics::par(mar = c(3, 1, 1, 1))
+  plot(stats::density(X[1,]), main = "", xlab = "", ylab = "", yaxt = "n",
+       col = grDevices::rgb(0,0,0,0), ylim = c(0, 1.1*max_y))
+  graphics::grid()
 
   # posterior predictive densities
   for (i in 1:nsim){
-    lines(density(Xrep[i,]), col = rgb(0.2,0.2,1,0.07))
+    graphics::lines(stats::density(Xrep[i,]), col = grDevices::rgb(0.2,0.2,1,0.07))
   }
 
   # data
-  lines(density(X[1,]), lwd = 3, col = rgb(0,0,0.5,1))
+  graphics::lines(stats::density(X[1,]), lwd = 3, col = grDevices::rgb(0,0,0.5,1))
 
-  legend("topleft", legend = c("Data", "Simulated data"),
-         col = c(rgb(0,0,0.5,1), rgb(0.2,0.2,1,0.5)),
-         lty = c(1,1), lwd = c(2,1), seg.len = .75,
-         bty = "n")
+  graphics::legend("topleft", legend = c("Data", "Simulated data"),
+                   col = c(grDevices::rgb(0,0,0.5,1), grDevices::rgb(0.2,0.2,1,0.5)),
+                   lty = c(1,1), lwd = c(2,1), seg.len = .75,
+                   bty = "n")
 
 }
 

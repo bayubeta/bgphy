@@ -4,15 +4,17 @@
 \alias{setModel}
 \title{Set a Gaussian phylogenetic model}
 \usage{
-setModel(tree, modeltypes, startNodes = NULL)
+setModel(tree, regime_names, modeltypes, startNodes = NULL)
 }
 \arguments{
 \item{tree}{A phylogenetic tree of class \code{phylo}.}
 
-\item{modeltypes}{A named vector of model types. The elements define the model types and names define the regime names.
-Currently only \code{"BM"} and \code{"OU"} are available as model types.}
+\item{regime_names}{A character vector of regime names.}
 
-\item{startNodes}{A named vector of nodes. Each element determines the start of a regime on the tree.}
+\item{modeltypes}{A vector of model types. Currently only \code{"BM"} and \code{"OU"} are available as model types.}
+
+\item{startNodes}{A list of nodes that determine the start of regimes. The names of elements in the list
+must match the names in the \code{regime_names}. Does not need to be specified if there is only one (global) regime.}
 }
 \value{
 An object of class \code{bgphy_model}, which contains:
@@ -27,9 +29,13 @@ Defines a Gaussian phylogenetic model.
 }
 \examples{
 \dontrun{
-modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+# global model
+OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+
+BMOU <- setModel(tree = lizardTree,
+                 regime_names = c("Ancestral", "New"),
+                 modeltypes = c("BM", "OU"),
+                 startNodes = list(Ancestral = c(101), New = c(135)))
 }
 
 }

@@ -16,10 +16,21 @@ Plots a number of density curves drawn from the posterior predictive distributio
 }
 \examples{
 \dontrun{
-OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-X <- matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU)))
-post <- bgphy(OU, X, nsample = 1000)
-post_pred_check(post)
+OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+post_OU <- bgphy(OU1,
+                 matrix(XOU[1,], nrow = 1,
+                        dimnames = list(NULL, colnames(XOU))))
+post_pred_check(post_OU)
+
+# mixed, OU to OU
+OUOU <- setModel(tree = lizardTree,
+                 regime_names = c("Ancestral", "New"),
+                 modeltypes = c("OU", "OU"),
+                 startNodes = list(Ancestral = c(101), New = c(135)))
+post_OUOU <- bgphy(BMOU,
+                   matrix(XMixedOU[1,], nrow = 1,
+                          dimnames = list(NULL, colnames(XMixedOU))))
+post_pred_check(post_OUOU)
 }
 
 }

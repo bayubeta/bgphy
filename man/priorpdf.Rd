@@ -20,7 +20,7 @@ prior_halfnormal(sigma)
 
 prior_halfcauchy(sigma)
 
-prior_halft(scale, nu)
+prior_halft(nu, sigma)
 }
 \value{
 A log probability density function of class \code{priorpdf}.

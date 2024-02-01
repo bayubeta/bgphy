@@ -164,9 +164,10 @@ print.bgphy_model <- function(model){
 # Plot a tree of class PCMTree
 #' Plot a tree with regimes configuration.
 #'
-#' Plots the tree object of class `PCMTree`.
+#' Plots the tree object of class `PCMTree`, along with regimes configuration.
 #'
-#' @param post An object of class \code{bgphy_model}.
+#' @param tree A tree of subclass \code{PCMTree}, obtained from [bgphy::setModel] definition.
+#' @param cols Selected color palette. If `NULL`, the default colors are set internally.
 #'
 #' @examples
 #' \dontrun{
@@ -178,11 +179,11 @@ print.bgphy_model <- function(model){
 #'                  regime_names = c("Ancestral", "New"),
 #'                  modeltypes = c("BM", "OU"),
 #'                  startNodes = list(Ancestral = c(101), New = c(135)))
-#' plot(BMOU$tree)
+#' plot_regimes(BMOU$tree)
 #' }
 #'
 #' @export
-plot.PCMTree <- function(tree, cols = NULL, ...){
+plot_regimes <- function(tree, cols = NULL, ...){
 
   if (is.null(cols)){
     cols <- c("red", "blue", "green1", "skyblue", "purple1")
@@ -204,10 +205,10 @@ plot.PCMTree <- function(tree, cols = NULL, ...){
     edge.col[edge.col == names(tree$part.regime)[i]] <- col[i]
   }
 
-  plot.phylo(tree, edge.col = edge.col, ...)
+  ape::plot.phylo(tree, edge.col = edge.col, ...)
   # add legend
-  legend("right", legend = ur, col = col, lty = rep(1, length(ur)), lwd = 2,
-         bty = "n")
+  graphics::legend("right", legend = ur, col = col, lty = rep(1, length(ur)),
+                   lwd = 2, bty = "n")
 }
 
 

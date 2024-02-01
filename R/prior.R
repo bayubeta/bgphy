@@ -23,7 +23,7 @@ defaultPriors <- function(model){
   if (r == 1){
     # for one regime
     # sigma > 0, 3*tree_height
-    priors$sigma <- prior_halft(scale = 3*t_height, nu = 1)
+    priors$sigma <- prior_halft(nu = 1, sigma = 3*t_height)
 
     if (modeltypes == "OU"){
       # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
@@ -39,7 +39,7 @@ defaultPriors <- function(model){
     for (i in 1:r){
       # sigma > 0, 3*tree_height
       s_sigma <- 3*t_height
-      priors[[paste0("sigma_", i)]] <- prior_halft(scale = 3*t_height, nu = 1)
+      priors[[paste0("sigma_", i)]] <- prior_halft(nu = 1, sigma = 3*t_height)
 
       if (modeltypes[i] == "OU"){
         # alpha > 0, t_{1/2} = 0.05*t_height => log(2)/(0.05 * t_height)
@@ -160,14 +160,15 @@ prior_halfcauchy <- function(sigma){
 
 #' @rdname priorpdf
 #' @export
-prior_halft <- function(scale, nu){
+prior_halft <- function(nu, sigma){
   f <- function(x){
     LaplacesDemon::dhalft(x, scale = scale, nu = nu)
+    extraDistr::dht(x, nu = nu, sigma = sigma)
   }
 
   class(f) <- c("priorpdf", "halft")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- stats::setNames(c(scale, nu), c("scale", "nu"))
+  attr(f, "params") <- stats::setNames(c(nu, sigma), c("nu", "sigma"))
 
   return(f)
 }
@@ -278,7 +279,7 @@ priorsampler.halfcauchy <- function(priorpdf){
 priorsampler.halft <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
-    LaplacesDemon::rhalft(n, scale = pars[1], nu = pars[2])
+    extraDistr::rht(n, nu = pars[1], sigma = pars[2])
   }
 
   attr(g, "params") <- attr(priorpdf, "params")

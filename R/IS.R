@@ -21,7 +21,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
 
   repeat{ # in case of singular Hessian, repeat from different starting point
     # find initial position for optim(), by the mean of the prior distribution
-    init <- apply(prior_sampler(model$priors)(1000), 2, median) # set initial value as median of samples drawn from priors
+    init <- apply(prior_sampler(model$priors)(1000), 2, stats::median) # set initial value as median of samples drawn from priors
 
     # transform to unbounded space
     initial <- tr$f(init)
