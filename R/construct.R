@@ -3,9 +3,10 @@
 #' Defines a Gaussian phylogenetic model.
 #'
 #' @param tree A phylogenetic tree of class `phylo`.
-#' @param modeltypes A named vector of model types. The elements define the model types and names define the regime names.
-#'    Currently only `"BM"` and `"OU"` are available as model types.
-#' @param startNodes A named vector of nodes. Each element determines the start of a regime on the tree.
+#' @param regime_names A character vector of regime names.
+#' @param modeltypes A vector of model types. Currently only `"BM"` and `"OU"` are available as model types.
+#' @param startNodes A list of nodes that determine the start of regimes. The names of elements in the list
+#'                    must match the names in the `regime_names`. Does not need to be specified if there is only one (global) regime.
 #'
 #' @returns An object of class `bgphy_model`, which contains:
 #' * `model`: The PCM model as defined by [PCMBase].
@@ -14,9 +15,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-#' startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#'
+#  # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
 #' }
 #'
 #' @export
@@ -95,10 +101,12 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 #'
 #' @examples
 #' \dontrun{
-#' modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-#' startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
-#' print(OU)
+#  # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' print(BMOU)
 #' }
 #'
 #' @export
@@ -143,6 +151,23 @@ print.bgphy_model <- function(model){
 
 
 
+# plot tree with multiple regimes (of class PCMTree)
+#' Plot a tree with multiple regimes.
+#'
+#' Plots the tree object of class `PCMTree`.
+#'
+#' @param post An object of class \code{bgphy_model}.
+#'
+#' @examples
+#' \dontrun{
+#  # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' plot(BMOU$tree)
+#' }
+#'
 #' @export
 plot.PCMTree <- function(tree, cols = NULL, ...){
 
@@ -168,6 +193,8 @@ plot.PCMTree <- function(tree, cols = NULL, ...){
 
   plot.phylo(tree, edge.col = edge.col, ...)
   # add legend
+  legend("right", legend = ur, col = col, lty = rep(1, length(ur)), lwd = 2,
+         bty = "n")
 }
 
 
