@@ -131,3 +131,38 @@ logsumexp <- function(logW, log = TRUE){
     return(exp(logsumW))
   }
 }
+
+
+
+branch_desc <- function(tree, node){
+  # if node is not a tip
+  if (node > length(tree$tip.label)){
+    # get branch ids of descendants
+    ids <- which(tree$edge[,1] == node)
+    descs <- tree$edge[ids,2]
+    return(c(ids, branch_desc(tree, descs[1]), branch_desc(tree, descs[2])))
+
+  }else{
+    return(NULL)
+  }
+}
+
+
+getBranches <- function(tree, node){
+  n <- length(tree$tip.label)
+
+  ids <- c()
+
+  # retrieve the parent branch (if ancestral, skip)
+  if (node != (n+1)){
+    ids <- c(ids, which(tree$edge[,2] == node))
+  }
+
+  return(c(ids, branch_desc(tree, node)))
+}
+
+
+
+
+
+

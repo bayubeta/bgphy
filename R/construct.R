@@ -20,7 +20,9 @@
 #' }
 #'
 #' @export
-setModel <- function(tree, modeltypes, startNodes = NULL){
+setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
+
+  r <- length(regime_names) # number of regimes
 
   # # check if tree is of class phylo
   # stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
@@ -38,7 +40,7 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
   r <- length(modeltypes) # number of regimes
   if (r == 1){
     # Global model
-    PCMmodel <- PCMBase::PCM(modeltypes)
+    PCMmodel <- PCMBase::PCM(model = modeltypes, regimes = regime_names)
   }else{
     # Mixed model
     # retrieve the names of regimes
@@ -48,11 +50,11 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
                            "BM__Omitted_X0__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x",
                            "OU__Omitted_X0__H__Theta__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x")
     # Create the PCM object
-    PCMmodel <- PCMBase::MixedGaussian(k = 1, modelTypes = modelStrings, mapping = stats::setNames(1:r, rnames))
+    PCMmodel <- PCMBase::MixedGaussian(k = 1, modelTypes = modelStrings, mapping = stats::setNames(1:r, regime_names))
 
     # update the tree with the regimes information
     tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
-                                           part.regime = setNames(names(startNodes), startNodes),
+                                           part.regime = unlist(sapply(1:r, function(i){stats::setNames(rep(names(startNodes)[i], length(startNodes[[i]])), startNodes[[i]])})),
                                            setPartition = TRUE, inplace = FALSE)
   }
 
@@ -61,7 +63,6 @@ setModel <- function(tree, modeltypes, startNodes = NULL){
 
   # set default priors for the parameters
   model$priors <- defaultPriors(model)
-
 
   return(model)
 }
@@ -121,3 +122,34 @@ print.bgphy_model <- function(model){
   cat("Priors: \n")
   print(model$priors)
 }
+
+
+
+#' @export
+plot.PCMTree <- function(tree, cols = NULL, ...){
+
+  if (is.null(cols)){
+    cols <- c("red", "blue", "green1", "skyblue", "purple1")
+  }
+
+  # unique regime names
+  ur <- unique(tree$part.regime)
+
+  # selected colors
+  col <- c()
+
+  for (i in 1:length(tree$part.regime)){
+    col[i] <- cols[which(ur == tree$part.regime[i])]
+  }
+
+
+  edge.col <- tree$edge.part
+  for (i in 1:length(tree$part.regime)){
+    edge.col[edge.col == names(tree$part.regime)[i]] <- col[i]
+  }
+
+  plot.phylo(tree, edge.col = edge.col, ...)
+  # add legend
+}
+
+

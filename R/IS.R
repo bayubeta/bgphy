@@ -60,6 +60,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
                                mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
     on.exit(parallel::stopCluster(cl))
+
   }else{
     # log-unnormalized posterior & loglik
     lup_ll <- t(apply(q, 1, lupost, model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
