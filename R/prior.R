@@ -72,7 +72,7 @@ print.bgphy_priors <- function(x, ...){
 
 #' log Probability density functions.
 #'
-#' This is a collection of log probability density functions used for the prior object of class \code{mgpm_prior}.
+#' This is a collection of log probability density functions used for the prior object of class \code{bgphy_priors}.
 #'
 #' @return A log probability density function of class \code{priorpdf}.
 #'
@@ -204,12 +204,24 @@ print.priorpdf <- function(x, ...){
 
 #============================= prior distributions RNG =============================
 
-
+#' RNG samplers for prior distribution.
+#'
+#' A collection of RNG sampler used for the prior object of class \code{bgphy_priors}
+#'
+#' @return A sampler of class `sampler` with subclass that depends on the type of distribution.
+#'
+#' @examples
+#' \dontrun{
+#' }
+#'
+#' @name priorsampler
+#' @rdname priorsampler
 #' @export
 priorsampler <- function(priorpdf){
   UseMethod("priorsampler")
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.uniform <- function(priorpdf){
   pars <- attr(priorpdf, "bounds")
@@ -223,6 +235,7 @@ priorsampler.uniform <- function(priorpdf){
   return(g)
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.normal <- function(priorpdf){
   pars <- attr(priorpdf, "params")
@@ -236,6 +249,7 @@ priorsampler.normal <- function(priorpdf){
   return(g)
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.gamma <- function(priorpdf){
   pars <- attr(priorpdf, "params")
@@ -249,6 +263,7 @@ priorsampler.gamma <- function(priorpdf){
   return(g)
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.halfnormal <- function(priorpdf){
   pars <- attr(priorpdf, "params")
@@ -262,6 +277,7 @@ priorsampler.halfnormal <- function(priorpdf){
   return(g)
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.halfcauchy <- function(priorpdf){
   pars <- attr(priorpdf, "params")
@@ -274,6 +290,7 @@ priorsampler.halfcauchy <- function(priorpdf){
   return(g)
 }
 
+#' @rdname priorsampler
 #' @export
 priorsampler.halft <- function(priorpdf){
   pars <- attr(priorpdf, "params")
@@ -287,7 +304,6 @@ priorsampler.halft <- function(priorpdf){
 }
 
 
-#' @export
 prior_sampler <- function(priors){
   p_sampler <- lapply(priors, priorsampler)
   p <- length(p_sampler)

@@ -26,7 +26,7 @@ prior_halft(nu, sigma)
 A log probability density function of class \code{priorpdf}.
 }
 \description{
-This is a collection of log probability density functions used for the prior object of class \code{mgpm_prior}.
+This is a collection of log probability density functions used for the prior object of class \code{bgphy_priors}.
 }
 \examples{
 \dontrun{
