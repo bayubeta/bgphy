@@ -2,8 +2,8 @@
 % Please edit documentation in R/bgphy-package.R
 \docType{package}
 \name{bgphy-package}
-\alias{bgphy}
 \alias{bgphy-package}
+\alias{_PACKAGE}
 \title{bgphy: Bayesian Analysis of Mixed Gaussian Phylogenetic Models}
 \description{
 Bayesian inference of parameters of mixed Gaussian phylogenetic models with shifts under the GLInv sub-family.

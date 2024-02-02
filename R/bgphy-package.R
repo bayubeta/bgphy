@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @aliases bgphy-package
 "_PACKAGE"
 
 ## usethis namespace: start
