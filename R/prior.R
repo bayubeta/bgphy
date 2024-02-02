@@ -204,13 +204,11 @@ print.priorpdf <- function(x, ...){
 
 #============================= prior distributions RNG =============================
 
-
-#' @export
 priorsampler <- function(priorpdf){
   UseMethod("priorsampler")
 }
 
-#' @export
+
 priorsampler.uniform <- function(priorpdf){
   pars <- attr(priorpdf, "bounds")
   g <- function(n){
@@ -223,7 +221,7 @@ priorsampler.uniform <- function(priorpdf){
   return(g)
 }
 
-#' @export
+
 priorsampler.normal <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -236,7 +234,7 @@ priorsampler.normal <- function(priorpdf){
   return(g)
 }
 
-#' @export
+
 priorsampler.gamma <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -249,7 +247,7 @@ priorsampler.gamma <- function(priorpdf){
   return(g)
 }
 
-#' @export
+
 priorsampler.halfnormal <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -262,7 +260,7 @@ priorsampler.halfnormal <- function(priorpdf){
   return(g)
 }
 
-#' @export
+
 priorsampler.halfcauchy <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -274,7 +272,7 @@ priorsampler.halfcauchy <- function(priorpdf){
   return(g)
 }
 
-#' @export
+
 priorsampler.halft <- function(priorpdf){
   pars <- attr(priorpdf, "params")
   g <- function(n){
@@ -287,7 +285,7 @@ priorsampler.halft <- function(priorpdf){
 }
 
 
-#' @export
+
 prior_sampler <- function(priors){
   p_sampler <- lapply(priors, priorsampler)
   p <- length(p_sampler)
