@@ -120,9 +120,9 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 #' }
 #'
 #' @export
-print.bgphy_model <- function(model){
+print.bgphy_model <- function(x, ...){
   # retrieve regime names
-  rnames <- attr(model$model, "regimes") # get regime names
+  rnames <- attr(x$model, "regimes") # get regime names
   r <- length(rnames) # get number of regimes
 
 
@@ -137,7 +137,7 @@ print.bgphy_model <- function(model){
 
 
   # retrieve model types
-  modeltypes <- attr(model, "modeltypes")
+  modeltypes <- attr(x, "modeltypes")
 
 
   cat(paste0("Regime", col_space,"Model\n"))
@@ -156,7 +156,7 @@ print.bgphy_model <- function(model){
 
   cat("\n")
   cat("Priors: \n")
-  print(model$priors)
+  print(x$priors)
 }
 
 

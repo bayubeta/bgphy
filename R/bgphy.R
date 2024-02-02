@@ -128,15 +128,15 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 #' }
 #'
 #' @export
-print.bgphy_posterior <- function(post, ...){
+print.bgphy_posterior <- function(x, ...){
   # get parameter names
-  par_names <- names(post$mean)
+  par_names <- names(x$mean)
 
   # get quantity names
-  q_names <- c(names(post)[1:3], c("2.5%", "50%", "97.5%"))
+  q_names <- c(names(x)[1:3], c("2.5%", "50%", "97.5%"))
 
   # put information into a matrix
-  M <- matrix(unlist(post[1:4]), nrow = length(par_names))
+  M <- matrix(unlist(x[1:4]), nrow = length(par_names))
   colnames(M) <- q_names
   rownames(M) <- par_names
 
@@ -144,7 +144,7 @@ print.bgphy_posterior <- function(post, ...){
 
   cat("\n")
 
-  cat(paste0("WAIC: ", post$WAIC, "\n"))
+  cat(paste0("WAIC: ", x$WAIC, "\n"))
 }
 
 

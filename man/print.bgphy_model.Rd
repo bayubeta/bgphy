@@ -4,7 +4,7 @@
 \alias{print.bgphy_model}
 \title{Print model information}
 \usage{
-\method{print}{bgphy_model}(model)
+\method{print}{bgphy_model}(x, ...)
 }
 \arguments{
 \item{post}{An object of class \code{bgphy_model}.}

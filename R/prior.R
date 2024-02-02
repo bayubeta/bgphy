@@ -57,12 +57,12 @@ defaultPriors <- function(model){
 
 # print a list of priors of class bgphy_priors
 #' @export
-print.bgphy_priors <- function(bgphy_priors, ...){
-  parnames <- names(bgphy_priors)
+print.bgphy_priors <- function(x, ...){
+  parnames <- names(x)
 
   for (par in parnames){
     cat(paste0(par))
-    print(bgphy_priors[[par]])
+    print(x[[par]])
     cat("\n")
   }
 }
@@ -162,7 +162,6 @@ prior_halfcauchy <- function(sigma){
 #' @export
 prior_halft <- function(nu, sigma){
   f <- function(x){
-    LaplacesDemon::dhalft(x, scale = scale, nu = nu)
     extraDistr::dht(x, nu = nu, sigma = sigma)
   }
 
@@ -176,15 +175,15 @@ prior_halft <- function(nu, sigma){
 
 # print single priorpdf
 #' @export
-print.priorpdf <- function(prior, ...){
+print.priorpdf <- function(x, ...){
   # print variable name and its distribution
-  classes <- attr(prior, "class")
+  classes <- attr(x, "class")
   type <- classes[length(classes)] # distribution name
   cat(" ~ ")
   cat(type, "(", sep = "")
 
   # print the parameter values
-  params <- attr(prior, "params")
+  params <- attr(x, "params")
   parnames <- names(params)
 
   for (i in 1:length(parnames)){

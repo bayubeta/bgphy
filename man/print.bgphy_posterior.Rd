@@ -4,7 +4,7 @@
 \alias{print.bgphy_posterior}
 \title{Print posterior information}
 \usage{
-\method{print}{bgphy_posterior}(post, ...)
+\method{print}{bgphy_posterior}(x, ...)
 }
 \arguments{
 \item{post}{An object of class \code{bgphy_posterior}.}
