@@ -9,7 +9,7 @@
 #'                    must match the names in the `regime_names`. Does not need to be specified if there is only one (global) regime.
 #'
 #' @returns An object of class `bgphy_model`, which contains:
-#' * `model`: The PCM model as defined by [PCMBase].
+#' * `model`: The PCM model as defined by [PCMBase::PCM()].
 #' * `tree`: The phylogenetic tree. If there are multiple regimes, the tree is converted into `PCMTree` class.
 #' * `priors`: A list of default priors. Each of them is of class `priorpdf`.
 #'

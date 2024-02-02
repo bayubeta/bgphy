@@ -19,7 +19,7 @@ must match the names in the \code{regime_names}. Does not need to be specified i
 \value{
 An object of class \code{bgphy_model}, which contains:
 \itemize{
-\item \code{model}: The PCM model as defined by \link{PCMBase}.
+\item \code{model}: The PCM model as defined by \code{\link[PCMBase:PCM]{PCMBase::PCM()}}.
 \item \code{tree}: The phylogenetic tree. If there are multiple regimes, the tree is converted into \code{PCMTree} class.
 \item \code{priors}: A list of default priors. Each of them is of class \code{priorpdf}.
 }
