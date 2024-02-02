@@ -29,6 +29,7 @@
 setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 
   r <- length(regime_names) # number of regimes
+  an <- ape::Ntip(tree) + 1 # ancestral node number
 
   # check if tree is of class phylo
   stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
@@ -54,7 +55,6 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
                 (all(unlist(startNodes) <= total_nodes)))
 
     # ancestral node needs to be included
-    an <- ape::Ntip(tree) + 1
     if (!(an %in% unlist(startNodes))){
       stop(paste0("Ancestral node (", an, ") must be included in the ancestral regime."))
     }
