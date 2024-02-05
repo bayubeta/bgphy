@@ -18,7 +18,7 @@
 #' # global model
 #' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 #'
-#  # mixed, BM to OU
+#' # mixed, BM to OU
 #' BMOU <- setModel(tree = lizardTree,
 #'                  regime_names = c("Ancestral", "New"),
 #'                  modeltypes = c("BM", "OU"),
@@ -111,7 +111,7 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 #' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 #' print(OU1)
 #'
-#  # mixed, BM to OU
+#'# mixed, BM to OU
 #' BMOU <- setModel(tree = lizardTree,
 #'                  regime_names = c("Ancestral", "New"),
 #'                  modeltypes = c("BM", "OU"),
@@ -171,10 +171,11 @@ print.bgphy_model <- function(x, ...){
 #'
 #' @examples
 #' \dontrun{
+#' # global model
 #' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 #' plot(OU1$tree)
 #'
-#  # mixed, BM to OU
+#' # mixed, BM to OU
 #' BMOU <- setModel(tree = lizardTree,
 #'                  regime_names = c("Ancestral", "New"),
 #'                  modeltypes = c("BM", "OU"),

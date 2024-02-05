@@ -7,13 +7,16 @@
 \method{print}{bgphy_posterior}(x, ...)
 }
 \arguments{
-\item{post}{An object of class \code{bgphy_posterior}.}
+\item{x}{An object of class \code{bgphy_posterior}.}
+
+\item{...}{Further argument to be passed to \code{print}.}
 }
 \description{
 This function prints the information of a posterior distribution on the console.
 }
 \examples{
 \dontrun{
+# global model
 OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 post_OU <- bgphy(OU1,
                  matrix(XOU[1,], nrow = 1,

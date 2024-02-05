@@ -105,11 +105,12 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
 #'
 #' This function prints the information of a posterior distribution on the console.
 #'
-#' @param post An object of class \code{bgphy_posterior}.
+#' @param x An object of class \code{bgphy_posterior}.
+#' @param ... Further argument to be passed to `print`.
 #'
 #' @examples
 #' \dontrun{
-#  # global model
+#' # global model
 #' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 #' post_OU <- bgphy(OU1,
 #'                  matrix(XOU[1,], nrow = 1,
@@ -140,7 +141,7 @@ print.bgphy_posterior <- function(x, ...){
   colnames(M) <- q_names
   rownames(M) <- par_names
 
-  print(M)
+  print(M, ...)
 
   cat("\n")
 

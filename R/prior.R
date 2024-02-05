@@ -56,13 +56,34 @@ defaultPriors <- function(model){
 }
 
 # print a list of priors of class bgphy_priors
+#' Print priors information
+#'
+#' Prints objects of class `bgphy_priors`, which contains objects of class `priorpdf`.
+#'
+#' @param x An object of class `bgphy_priors`.
+#' @param ... Other arguments to be passed to `print` or `print.priorpdf`
+#'
+#' @examples
+#' \dontrun{
+#' # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' OU1$priors
+#'
+#' # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' BMOU$priors
+#' }
+#'
 #' @export
 print.bgphy_priors <- function(x, ...){
   parnames <- names(x)
 
   for (par in parnames){
     cat(paste0(par))
-    print(x[[par]])
+    print(x[[par]], ...)
     cat("\n")
   }
 }
@@ -78,13 +99,23 @@ print.bgphy_priors <- function(x, ...){
 #'
 #' @examples
 #' \dontrun{
-#' modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-#' startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-#' OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+#' # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 #' # set custom priors
-#' OU$priors$X0 <- prior_normal(mean = 0, sd = 2)
-#' OU$priors$alpha <- prior_halfnormal(sigma = 3)
-#' OU$priors$theta_1 <- prior_normal(mean = 2, sd = 2)
+#' OU1$priors$X0 <- OU1$priors$theta <- prior_normal(mean = 0, sd = 3)
+#' OU1$priors$alpha <- OU1$priors$sigma <- prior_halfnormal(sigma = 2)
+#'
+#' # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' # set custom priors
+#' BMOU$priors$X0 <- prior_normal(mean = 0, sd = 3)
+#' BMOU$priors$sigma_1 <- prior_halft(nu = 1, sigma = 2)
+#' BMOU$priors$alpha_2 <- prior_halfnormal(sigma = 5)
+#' BMOU$priors$theta_2 <- prior_normal(mean = 3, sd = 5)
+#' BMOU$priors$sigma_2 <- prior_halfnormal(sigma = 3)
 #' }
 #'
 #' @name priorpdf
@@ -174,6 +205,27 @@ prior_halft <- function(nu, sigma){
 
 
 # print single priorpdf
+#' Print single prior information
+#'
+#' Prints objects of class `priorpdf`.
+#'
+#' @param x An object of class `priorpdf`.
+#' @param ... Other arguments to be passed to `print` or `print.priorpdf`
+#'
+#' @examples
+#' \dontrun{
+#' # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' OU1$priors$alpha
+#'
+#' # mixed, BM to OU
+#' BMOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("BM", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' BMOU$priors$sigma_2
+#' }
+#'
 #' @export
 print.priorpdf <- function(x, ...){
   # print variable name and its distribution
@@ -206,12 +258,20 @@ print.priorpdf <- function(x, ...){
 
 #' RNG samplers for prior distribution.
 #'
-#' A collection of RNG sampler used for the prior object of class \code{bgphy_priors}
+#' Converts a `priorpdf` object into an RNG sampler.
 #'
-#' @return A sampler of class `sampler` with subclass that depends on the type of distribution.
+#' @param priorpdf An object of class `priorpdf`.
+#'
+#' @return A sampler of class `sampler` with subclass that depends on the type
+#'         of distribution of the `priorpdf` object. This sampler only takes number
+#'         of samples `n` as its argument, while the distributional parameters are
+#'         fully specified by the `priorpdf` object.
 #'
 #' @examples
 #' \dontrun{
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' ralpha <- priorsampler(OU1$priors$alpha)
+#' ralpha(100)
 #' }
 #'
 #' @name priorsampler

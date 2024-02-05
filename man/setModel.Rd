@@ -32,6 +32,7 @@ Defines a Gaussian phylogenetic model.
 # global model
 OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 
+# mixed, BM to OU
 BMOU <- setModel(tree = lizardTree,
                  regime_names = c("Ancestral", "New"),
                  modeltypes = c("BM", "OU"),

@@ -24,14 +24,23 @@ priorsampler(priorpdf)
 
 \method{priorsampler}{halft}(priorpdf)
 }
+\arguments{
+\item{priorpdf}{An object of class \code{priorpdf}.}
+}
 \value{
-A sampler of class \code{sampler} with subclass that depends on the type of distribution.
+A sampler of class \code{sampler} with subclass that depends on the type
+of distribution of the \code{priorpdf} object. This sampler only takes number
+of samples \code{n} as its argument, while the distributional parameters are
+fully specified by the \code{priorpdf} object.
 }
 \description{
-A collection of RNG sampler used for the prior object of class \code{bgphy_priors}
+Converts a \code{priorpdf} object into an RNG sampler.
 }
 \examples{
 \dontrun{
+OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+ralpha <- priorsampler(OU1$priors$alpha)
+ralpha(100)
 }
 
 }

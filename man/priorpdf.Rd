@@ -30,13 +30,23 @@ This is a collection of log probability density functions used for the prior obj
 }
 \examples{
 \dontrun{
-modeltypes <- setNames(c("OU", "OU"), c("ancestral", "new"))
-startNodes <- setNames(c(101, 135), c("ancestral", "new"))
-OU <- setModel(tree = lizardTree, modeltypes = ("OU"))
+# global model
+OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 # set custom priors
-OU$priors$X0 <- prior_normal(mean = 0, sd = 2)
-OU$priors$alpha <- prior_halfnormal(sigma = 3)
-OU$priors$theta_1 <- prior_normal(mean = 2, sd = 2)
+OU1$priors$X0 <- OU1$priors$theta <- prior_normal(mean = 0, sd = 3)
+OU1$priors$alpha <- OU1$priors$sigma <- prior_halfnormal(sigma = 2)
+
+# mixed, BM to OU
+BMOU <- setModel(tree = lizardTree,
+                 regime_names = c("Ancestral", "New"),
+                 modeltypes = c("BM", "OU"),
+                 startNodes = list(Ancestral = c(101), New = c(135)))
+# set custom priors
+BMOU$priors$X0 <- prior_normal(mean = 0, sd = 3)
+BMOU$priors$sigma_1 <- prior_halft(nu = 1, sigma = 2)
+BMOU$priors$alpha_2 <- prior_halfnormal(sigma = 5)
+BMOU$priors$theta_2 <- prior_normal(mean = 3, sd = 5)
+BMOU$priors$sigma_2 <- prior_halfnormal(sigma = 3)
 }
 
 }

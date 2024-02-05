@@ -16,9 +16,11 @@ Plots the tree object of class \code{PCMTree}, along with regimes configuration.
 }
 \examples{
 \dontrun{
+# global model
 OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
 plot(OU1$tree)
 
+# mixed, BM to OU
 BMOU <- setModel(tree = lizardTree,
                  regime_names = c("Ancestral", "New"),
                  modeltypes = c("BM", "OU"),
