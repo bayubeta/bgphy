@@ -7,7 +7,9 @@
 \method{print}{bgphy_model}(x, ...)
 }
 \arguments{
-\item{post}{An object of class \code{bgphy_model}.}
+\item{x}{An object of class \code{bgphy_model}.}
+
+\item{...}{Other argumetns to be passed to \code{print.priorpdf}.}
 }
 \description{
 This function prints the information of a model object of class \code{bgphy_model} on the console.

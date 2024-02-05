@@ -10,6 +10,8 @@ plot_regimes(tree, cols = NULL, ...)
 \item{tree}{A tree of subclass \code{PCMTree}, obtained from \link{setModel} definition.}
 
 \item{cols}{Selected color palette. If \code{NULL}, the default colors are set internally.}
+
+\item{...}{Other arguments to be passed to \code{\link[ape:plot.phylo]{ape::plot.phylo()}}.}
 }
 \description{
 Plots the tree object of class \code{PCMTree}, along with regimes configuration.

@@ -22,6 +22,25 @@ prior_halfcauchy(sigma)
 
 prior_halft(nu, sigma)
 }
+\arguments{
+\item{min}{Lower bound.}
+
+\item{max}{Upper bound.}
+
+\item{mean}{Mean.}
+
+\item{sd}{Standard deviation.}
+
+\item{shape}{Shape parameter.}
+
+\item{rate}{Rate parameter.}
+
+\item{scale}{Scale parameter.}
+
+\item{sigma}{Scale parameter.}
+
+\item{nu}{Degrees of freedom.}
+}
 \value{
 A log probability density function of class \code{priorpdf}.
 }

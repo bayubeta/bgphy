@@ -103,7 +103,8 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
 #'
 #' This function prints the information of a model object of class `bgphy_model` on the console.
 #'
-#' @param post An object of class \code{bgphy_model}.
+#' @param x An object of class \code{bgphy_model}.
+#' @param ... Other argumetns to be passed to `print.priorpdf`.
 #'
 #' @examples
 #' \dontrun{
@@ -168,6 +169,7 @@ print.bgphy_model <- function(x, ...){
 #'
 #' @param tree A tree of subclass \code{PCMTree}, obtained from [bgphy::setModel] definition.
 #' @param cols Selected color palette. If `NULL`, the default colors are set internally.
+#' @param ... Other arguments to be passed to [ape::plot.phylo()].
 #'
 #' @examples
 #' \dontrun{

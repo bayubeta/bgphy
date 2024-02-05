@@ -97,6 +97,17 @@ print.bgphy_priors <- function(x, ...){
 #'
 #' @return A log probability density function of class \code{priorpdf}.
 #'
+#' @param min Lower bound.
+#' @param max Upper bound.
+#' @param mean Mean.
+#' @param sd Standard deviation.
+#' @param shape Shape parameter.
+#' @param rate Rate parameter.
+#' @param scale Scale parameter.
+#' @param sigma Scale parameter.
+#' @param nu Degrees of freedom.
+#'
+#'
 #' @examples
 #' \dontrun{
 #' # global model
