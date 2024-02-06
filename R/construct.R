@@ -35,7 +35,9 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
   stopifnot("Tree must be of class phylo." = class(tree) == "phylo")
   # check if elements of modeltypes is in {"OU", "BM"}
   stopifnot("Model name not found. Choose between BM or OU." = all(modeltypes %in% c("BM", "OU")))
-  # check if startnodes are not null if the there are regimes
+  # check if the length of regime_names matches the length of modeltypes
+  stopifnot("Number of regimes does not match the length of modeltypes." =
+              length(regime_names) == length(modeltypes))
   if (length(modeltypes) > 1){
     stopifnot("Starting nodes for regimes are not specified." = !is.null(startNodes))
 
