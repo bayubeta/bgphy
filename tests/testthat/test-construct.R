@@ -129,7 +129,46 @@ test_that("Model is correctly constructed", {
 
 
 test_that("Throw an error for wrong inputs", {
+  # tree
+  expect_error(setModel(tree = "Tree", regime_names = "Regime1", modeltypes = "OU"))
 
+  # model types: reject anything other than "BM" and "OU"
+  expect_error(setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "ou"))
+  expect_error(setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "bm"))
+  expect_error(setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "type"))
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "oU"),
+                        startNodes = list(Ancestral = c(101), New = c(135))))
+
+  # startNodes:
+  # needs to be a list
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = c("101", "135")))
+  # names match regime_names
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(R1 = c(101), R2 = c(135))))
+  # number of regimes match
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(Ancestral = c(101))))
+  expect_error(setModel(tree = lizardTree, regime_names = "Ancestral",
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(Ancestral = c(101), New = c(135))))
+  # values in startNodes must be in the tree
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(Ancestral = c(101), New = c(135, "abc"))))
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(Ancestral = c(101, 99), New = c(135))))
+  # ancestral nodes must be included in startNodes
+  expect_error(setModel(tree = lizardTree, regime_names = c("Ancestral", "New"),
+                        modeltypes = c("BM", "OU"),
+                        startNodes = list(Ancestral = c(102), New = c(135))))
+  # number of regimes must match the length of modeltypes
+  expect_error(setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = c("OU", "OU")))
 })
 
 
