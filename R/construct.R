@@ -48,11 +48,10 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
     # number of regimes must match number of elements in startNodes
     stopifnot("startNodes must be specified for each regime" = (r == length(startNodes)))
 
-    # check startNodes values (numeric & in the tree)
-    stopifnot("startNodes must be numeric values." = (is.numeric(unlist(startNodes))))
+    # check startNodes values, must be in the tree
     total_nodes <- 2*tree$Nnode + 1
-    stopifnot("startNodes are not in the tree." = (all(0<unlist(startNodes))) &
-                (all(unlist(startNodes) <= total_nodes)))
+    stopifnot("Some nodes in startNodes are not in the tree." =
+                (unlist(startNodes) %in% c(an:total_nodes, tree$tip.label)))
 
     # ancestral node needs to be included
     if (!(an %in% unlist(startNodes))){
