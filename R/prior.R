@@ -133,6 +133,7 @@ print.bgphy_priors <- function(x, ...){
 #' @rdname priorpdf
 #' @export
 prior_uniform <- function(min = 0, max = 1){
+  stopifnot("Parameter values are invalid" = is.numeric(c(min, max)) & (min < max))
   f <- function(x){
     stats::dunif(x, min = min, max = max, log = TRUE)
   }
@@ -147,6 +148,7 @@ prior_uniform <- function(min = 0, max = 1){
 #' @rdname priorpdf
 #' @export
 prior_normal <- function(mean = 0, sd = 1){
+  stopifnot("Parameter values are invalid" = is.numeric(c(mean, sd)) & (sd>0))
   f <- function(x){
     stats::dnorm(x, mean = mean, sd = sd, log = TRUE)
   }
@@ -160,14 +162,16 @@ prior_normal <- function(mean = 0, sd = 1){
 
 #' @rdname priorpdf
 #' @export
-prior_gamma <- function(shape, rate = 1, scale = 1/rate){
+prior_gamma <- function(shape, rate = 1){
+  stopifnot("Parameter values are invalid" = is.numeric(c(shape, rate)) &
+              all(c(shape, rate)>0))
   f <- function(x){
     stats::dgamma(x, shape, rate = rate, log = TRUE)
   }
 
   class(f) <- c("priorpdf", "gamma")
   attr(f, "bounds") <- c(0, Inf)
-  attr(f, "params") <- stats::setNames(c(shape, rate, scale), c("shape", "rate", "scale"))
+  attr(f, "params") <- stats::setNames(c(shape, rate), c("shape", "rate"))
 
   return(f)
 }
@@ -175,6 +179,7 @@ prior_gamma <- function(shape, rate = 1, scale = 1/rate){
 #' @rdname priorpdf
 #' @export
 prior_halfnormal <- function(sigma){
+  stopifnot("Parameter values are invalid" = is.numeric(sigma) & (sigma>0))
   f <- function(x){
     extraDistr::dhnorm(x, sigma = sigma, log = TRUE)
   }
@@ -189,6 +194,7 @@ prior_halfnormal <- function(sigma){
 #' @rdname priorpdf
 #' @export
 prior_halfcauchy <- function(sigma){
+  stopifnot("Parameter values are invalid" = is.numeric(sigma) & (sigma>0))
   f <- function(x){
     extraDistr::dhcauchy(x, sigma = sigma, log = TRUE)
   }
@@ -203,6 +209,7 @@ prior_halfcauchy <- function(sigma){
 #' @rdname priorpdf
 #' @export
 prior_halft <- function(nu, sigma){
+  stopifnot("Parameter values are invalid" = is.numeric(c(nu, sigma)) & all(c(nu, sigma)>0))
   f <- function(x){
     extraDistr::dht(x, nu = nu, sigma = sigma)
   }

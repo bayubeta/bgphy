@@ -199,14 +199,3 @@ test_that("Outputs are correct",{
   expect_output(print(OUOU), "theta_2 ~ normal\\(mean = 0, sd = 10\\)")
   expect_output(print(OUOU), "sigma_2 ~ halft\\(nu = 1, sigma = 3\\)")
 })
-
-
-
-
-
-
-
-
-
-
-
