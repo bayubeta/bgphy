@@ -172,7 +172,33 @@ test_that("Throw an error for wrong inputs", {
 })
 
 
+test_that("Outputs are correct",{
+  OU1 <- setModel(tree = lizardTree, regime_names = "R1", modeltypes = "OU")
+  expect_output(print(OU1), "R1        OU\\(alpha, theta, sigma\\)")
+  expect_output(print(OU1), "X0 ~ normal\\(mean = 0, sd = 10\\)")
+  expect_output(print(OU1), "alpha ~ halfnormal\\(sigma = 6.931472\\)")
+  expect_output(print(OU1), "theta ~ normal\\(mean = 0, sd = 10\\)")
+  expect_output(print(OU1), "sigma ~ halft\\(nu = 1, sigma = 3\\)")
 
+  BM1 <- setModel(tree = lizardTree, regime_names = "Ancestral", modeltypes = "BM")
+  expect_output(print(BM1), "Ancestral   BM\\(sigma\\)")
+  expect_output(print(BM1), "X0 ~ normal\\(mean = 0, sd = 10\\)")
+  expect_output(print(BM1), "sigma ~ halft\\(nu = 1, sigma = 3\\)")
+
+  expect_silent(OUOU <- setModel(tree = lizardTree,
+                                 regime_names = c("1", "2"),
+                                 modeltypes = c("OU", "OU"),
+                                 startNodes = list("1" = c(101, 162, 143, "ahli"),
+                                                   "2" = c(134, 105))))
+  expect_output(print(OUOU), "1         OU\\(alpha_1, theta_1, sigma_1\\)")
+  expect_output(print(OUOU), "2         OU\\(alpha_2, theta_2, sigma_2\\)")
+  expect_output(print(OUOU), "alpha_1 ~ halfnormal\\(sigma = 6.931472\\)")
+  expect_output(print(OUOU), "theta_1 ~ normal\\(mean = 0, sd = 10\\)")
+  expect_output(print(OUOU), "sigma_1 ~ halft\\(nu = 1, sigma = 3\\)")
+  expect_output(print(OUOU), "alpha_2 ~ halfnormal\\(sigma = 6.931472\\)")
+  expect_output(print(OUOU), "theta_2 ~ normal\\(mean = 0, sd = 10\\)")
+  expect_output(print(OUOU), "sigma_2 ~ halft\\(nu = 1, sigma = 3\\)")
+})
 
 
 
