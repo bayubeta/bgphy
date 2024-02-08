@@ -80,6 +80,7 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
     modelStrings <- ifelse(modeltypes == "BM",
                            "BM__Omitted_X0__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x",
                            "OU__Omitted_X0__H__Theta__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x")
+
     # Create the PCM object
     PCMmodel <- PCMBase::MixedGaussian(k = 1, modelTypes = modelStrings, mapping = stats::setNames(1:r, regime_names))
 
