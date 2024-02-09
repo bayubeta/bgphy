@@ -38,8 +38,6 @@ prior_halft(nu, sigma)
 \item{sigma}{Scale parameter.}
 
 \item{nu}{Degrees of freedom.}
-
-\item{scale}{Scale parameter.}
 }
 \value{
 A log probability density function of class \code{priorpdf}.

@@ -103,7 +103,6 @@ print.bgphy_priors <- function(x, ...){
 #' @param sd Standard deviation.
 #' @param shape Shape parameter.
 #' @param rate Rate parameter.
-#' @param scale Scale parameter.
 #' @param sigma Scale parameter.
 #' @param nu Degrees of freedom.
 #'

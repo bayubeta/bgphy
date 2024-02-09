@@ -6,6 +6,7 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
+Sys.setenv("R_TESTS" = "")
 library(testthat)
 library(bgphy)
 
