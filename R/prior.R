@@ -211,7 +211,7 @@ prior_halfcauchy <- function(sigma){
 prior_halft <- function(nu, sigma){
   stopifnot("Parameter values are invalid" = is.numeric(c(nu, sigma)) & all(c(nu, sigma)>0))
   f <- function(x){
-    extraDistr::dht(x, nu = nu, sigma = sigma)
+    extraDistr::dht(x, nu = nu, sigma = sigma, log = TRUE)
   }
 
   class(f) <- c("priorpdf", "halft")
