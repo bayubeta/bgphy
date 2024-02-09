@@ -14,7 +14,7 @@ prior_uniform(min = 0, max = 1)
 
 prior_normal(mean = 0, sd = 1)
 
-prior_gamma(shape, rate = 1, scale = 1/rate)
+prior_gamma(shape, rate = 1)
 
 prior_halfnormal(sigma)
 
@@ -35,11 +35,11 @@ prior_halft(nu, sigma)
 
 \item{rate}{Rate parameter.}
 
-\item{scale}{Scale parameter.}
-
 \item{sigma}{Scale parameter.}
 
 \item{nu}{Degrees of freedom.}
+
+\item{scale}{Scale parameter.}
 }
 \value{
 A log probability density function of class \code{priorpdf}.
