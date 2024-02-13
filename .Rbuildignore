@@ -1,3 +1,8 @@
 ^bgphy\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^Ex\.R$
+^Experiments\.R$
+^explots\.R$
+^me_plot\.R$
+^modeleval\.R$
