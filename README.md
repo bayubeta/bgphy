@@ -3,5 +3,5 @@
 
 ## Installation
 ```
-devtools::install_github("bayubeta/bgphy")
+devtools::install_github("bayubeta/bgphy", build_vignettes = TRUE)
 ```
