@@ -6,3 +6,5 @@
 ^explots\.R$
 ^me_plot\.R$
 ^modeleval\.R$
+^vignettes/bgphy_tutorial\.qmd$
+^vignettes/bgphy_tutorial\.bib$
