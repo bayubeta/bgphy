@@ -183,7 +183,7 @@ post_pred_check <- function(post, nsim = 100){
   # check if input is of class bgphy_posterior
   stopifnot("Object is not of class bgphy_posterior." = class(post) == "bgphy_posterior")
   # check if nsample is valid
-  stopifnot("Invalid value of nsample." = is.numeric(nsim) & ((abs(nsim - round(nsim)) < .Machine$double.eps^0.5)) & (nsim > 0))
+  stopifnot("Invalid value of nsim." = is.numeric(nsim) & ((abs(nsim - round(nsim)) < .Machine$double.eps^0.5)) & (nsim > 0))
 
   N <- length(post$W)
 
@@ -235,4 +235,62 @@ post_pred_check <- function(post, nsim = 100){
                    bty = "n")
 
 }
+
+
+
+
+
+
+
+# simulate from the posterior distribution using Sampling Importance Resampling
+
+#' Simulate posterior samples
+#'
+#' Generates sample from the posterior distribution using sampling-importance resampling.
+#'
+#' @param post An object of class \code{bgphy_posterior}.
+#' @param nsample Number of samples or draws from the posterior distribution.
+#'
+#' @examples
+#' \dontrun{
+#  # global model
+#' OU1 <- setModel(tree = lizardTree, regime_names = "Regime1", modeltypes = "OU")
+#' post_OU <- bgphy(OU1,
+#'                  matrix(XOU[1,], nrow = 1,
+#'                         dimnames = list(NULL, colnames(XOU))))
+#' post_simulate(post_OU)
+#'
+#' # mixed, OU to OU
+#' OUOU <- setModel(tree = lizardTree,
+#'                  regime_names = c("Ancestral", "New"),
+#'                  modeltypes = c("OU", "OU"),
+#'                  startNodes = list(Ancestral = c(101), New = c(135)))
+#' post_OUOU <- bgphy(BMOU,
+#'                    matrix(XMixedOU[1,], nrow = 1,
+#'                           dimnames = list(NULL, colnames(XMixedOU))))
+#' post_simulate(post_OUOU)
+#' }
+#'
+#' @export
+post_simulate <- function(post, nsample = 10000){
+  # check if input is of class bgphy_posterior
+  stopifnot("Object is not of class bgphy_posterior." = class(post) == "bgphy_posterior")
+  # check if nsample is valid
+  stopifnot("Invalid value of nsample." = is.numeric(nsample) & ((abs(nsample - round(nsample)) < .Machine$double.eps^0.5)) & (nsample > 0))
+
+  # number of particles
+  npart <- length(post$W)
+
+  # sample indices by weights
+  ind <- sample(1:npart, nsample, replace = TRUE, prob = post$W)
+
+  post_sample <- post$Q[ind,]
+
+  return(post_sample)
+}
+
+
+
+
+
 
