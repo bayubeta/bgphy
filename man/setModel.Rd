@@ -13,8 +13,9 @@ setModel(tree, regime_names, modeltypes, startNodes = NULL)
 
 \item{modeltypes}{A vector of model types. Currently only \code{"BM"} and \code{"OU"} are available as model types.}
 
-\item{startNodes}{A list of nodes that determine the start of regimes. The names of elements in the list
-must match the names in the \code{regime_names}. Does not need to be specified if there is only one (global) regime.}
+\item{startNodes}{A list of nodes that determine the regimes. Given a node, a regime includes all edges descending from that node
+and the edge leading to that node (if exists). The names of elements in the list must match the names in the \code{regime_names}.
+Does not need to be specified if there is only one (global) regime.}
 }
 \value{
 An object of class \code{bgphy_model}, which contains:

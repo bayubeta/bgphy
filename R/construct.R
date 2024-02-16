@@ -5,8 +5,9 @@
 #' @param tree A phylogenetic tree of class `phylo`.
 #' @param regime_names A character vector of regime names.
 #' @param modeltypes A vector of model types. Currently only `"BM"` and `"OU"` are available as model types.
-#' @param startNodes A list of nodes that determine the start of regimes. The names of elements in the list
-#'                    must match the names in the `regime_names`. Does not need to be specified if there is only one (global) regime.
+#' @param startNodes A list of nodes that determine the regimes. Given a node, a regime includes all edges descending from that node
+#'                   and the edge leading to that node (if exists). The names of elements in the list must match the names in the `regime_names`.
+#'                   Does not need to be specified if there is only one (global) regime.
 #'
 #' @returns An object of class `bgphy_model`, which contains:
 #' * `model`: The PCM model as defined by [PCMBase::PCM()].
