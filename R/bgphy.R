@@ -216,7 +216,8 @@ post_pred_check <- function(post, nsim = 100){
 
 
   # base
-  on.exit(graphics::par(mar = c(3, 1, 1, 1)))
+  mar <- graphics::par(mar = c(3, 1, 1, 1))
+  on.exit(par(mar))
   plot(stats::density(X[1,]), main = "", xlab = "", ylab = "", yaxt = "n",
        col = grDevices::rgb(0,0,0,0), ylim = c(0, 1.1*max_y))
   graphics::grid()
