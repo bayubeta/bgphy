@@ -192,7 +192,14 @@ print.bgphy_model <- function(x, ...){
 plot_regimes <- function(tree, cols = NULL, ...){
 
   if (is.null(cols)){
-    cols <- c("red", "blue", "green1", "skyblue", "purple1")
+    colPalettes <- cbind(sapply(1:4, function(i){paste0("firebrick", i)}),
+                         sapply(1:4, function(i){paste0("dodgerblue", i)}),
+                         sapply(1:4, function(i){paste0("green", i)}),
+                         sapply(1:4, function(i){paste0("turquoise", i)}),
+                         sapply(1:4, function(i){paste0("wheat", i)}),
+                         sapply(1:4, function(i){paste0("violetred", i)}))
+
+    cols <- as.vector(t(colPalettes))
   }
 
   # unique regime names
