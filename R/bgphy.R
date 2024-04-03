@@ -88,8 +88,11 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   rownames(Mq) <- names(res$mean)
   res$quantiles <- Mq
 
+  # calculate posterior predictive loss
+  res$loss <- ppred_loss(res, X, model)
+
   # change order of the list
-  res <- res[c("mean", "std_error", "std", "quantiles", "WAIC", "Q", "W")]
+  res <- res[c("mean", "std_error", "std", "quantiles", "loss", "Q", "W")]
 
 
   class(res) <- "bgphy_posterior"
