@@ -199,7 +199,7 @@ post_pred_check <- function(post, nsim = 100){
   # sample according to weights
   post_par <- post$Q[sample(1:N, nsim, prob = post$W, replace = TRUE),]
 
-  # empty matric for storing Xrep (posterior predictive values)
+  # empty matrix for storing Xrep (posterior predictive values)
   Xrep <- matrix(nrow = nsim, ncol = ncol(X))
 
   for (i in 1:nsim){
