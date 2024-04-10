@@ -36,9 +36,10 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
     # posterior mode (log space)
     post_mode <- optRes$par
     # approximated covariance, scale to focus on the important area around mode
-    appr_cov <- try(solve(-optRes$hessian)*scale, silent = TRUE)
+    appr_cov <- try(solve(-optRes$hessian)*scale + diag(d)*1e-8, silent = TRUE) # add diagonal jitters for numerical stability
 
-    if (all(class(appr_cov) != "try-error")){
+    # check if appr_cov is already positive definite
+    if (all(eigen(appr_cov)$values >= 1e-13) & all(class(appr_cov) != "try-error")){
       break()
     }
   }
@@ -89,7 +90,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
 
   Q <- t(apply(q, 1, tr$g)) # proposed values on the original space
 
-  return(list(Q = Q, W = Wst))
+  return(list(Q = Q, W = Wst, appr_cov = appr_cov))
 }
 
 
