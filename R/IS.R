@@ -78,16 +78,6 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
   Wst <- exp(logWst) # normalized weights
   MWst <- matrix(rep(Wst, d), ncol = d) # matrix of normalized weights
 
-  # # compute expected values
-  # Epars_ls <- colSums(q*MWst) # expected value (in log space)
-  # Epars <- tr$g(Epars_ls) # transform the expected value to the original space
-  #
-  # # compute WAIC
-  # meanlp <- sum(loglik*Wst) # mean of log predictive dist
-  # varlp <- sum((Wst^2)*((loglik - meanlp)^2)) # variance of log predictive dist
-  # lppd <- logsumexp(loglik + logWst) # log pointwise predictive distribution
-  # WAIC <- -2*(lppd - varlp) # WAIC
-
   Q <- t(apply(q, 1, tr$g)) # proposed values on the original space
 
   return(list(Q = Q, W = Wst, appr_cov = appr_cov))
