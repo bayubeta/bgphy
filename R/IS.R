@@ -52,11 +52,11 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
   if (parallel){
     cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
     parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams"), envir = environment())
-    # log-unnormalized posterior & loglik
-    lup_ll <- t(parallel::parApply(cl, q, 1, lupost,
+    # log-unnormalized posterior
+    logp <- t(parallel::parApply(cl, q, 1, lupost,
                                    model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
-    logp <- lup_ll[,1] # log-unnormalized posterior
-    loglik <- lup_ll[,2] # log-likelihood
+    logp <- as.vector(logp) # convert to vector
+
     # log proposal
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
                                mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
@@ -66,7 +66,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
     # log-unnormalized posterior & loglik
     lup_ll <- t(apply(q, 1, lupost, model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
     logp <- lup_ll[,1] # log-unnormalized posterior
-    loglik <- lup_ll[,2] # log-likelihood
+    # loglik <- lup_ll[,2] # log-likelihood
     logq <- apply(q, 1, mvtnorm::dmvnorm,
                   mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
   }

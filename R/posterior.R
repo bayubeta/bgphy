@@ -62,8 +62,8 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
     return(c(-1e20, -1e20))
   }
 
-  # , c("log_u_post", "loglik")
+  # return log unnormalized posterior
 
-  return(c(sum_log[1],loglik))
+  return(sum_log)
 }
 
