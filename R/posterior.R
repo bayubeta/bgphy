@@ -141,7 +141,7 @@ ppred_loss <- function(P, X, model){
   on.exit(parallel::stopCluster(cl))
 
   # return a list of loss score and the posterior predictive samples
-  loss <- sum((X - colMeans(Xppred))^2) + sum(diag(cov(Xppred)))
+  loss <- sum((X - colMeans(Xppred))^2) + sum(diag(stats::cov(Xppred)))
 
   return(list(loss = loss, Xppred = Xppred))
 }

@@ -4,12 +4,12 @@
 \alias{post_pred_check}
 \title{Posterior predictive check}
 \usage{
-post_pred_check(post, nsim = 100)
+post_pred_check(post, ...)
 }
 \arguments{
 \item{post}{An object of class \code{bgphy_posterior}.}
 
-\item{nsim}{Number of simulations, or draws from the posterior predictive distribution.}
+\item{...}{Other arguments to be passed on to the \code{plot} function.}
 }
 \description{
 Plots a number of density curves drawn from the posterior predictive distribution and the data density curve.

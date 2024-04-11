@@ -78,11 +78,10 @@ test_that("likelihood and posterior works", {
   tr_OU <- trfunc(priors_tr_OU)
   expect_equal(lupost(p = tr_OU$f(c(0,2,2,2)), model = OU1$model, X = matrix(X2, nrow = 1, dimnames = list(NULL, mytr2$tip.label)),
                       tree = OU1$tree, priors_tr = priors_tr_OU, tr = tr_OU),
-               c(stats::dnorm(0, mean = 0, sd = 10, log = TRUE) + stats::dnorm(2, mean = 0, sd = 10, log = TRUE) +
+               stats::dnorm(0, mean = 0, sd = 10, log = TRUE) + stats::dnorm(2, mean = 0, sd = 10, log = TRUE) +
                  extraDistr::dhnorm(2, sigma = 3.465736, log = TRUE) + log(2) +
                  extraDistr::dht(2, nu = 1, sigma = 6, log = TRUE) + log(2) +
-                 mvtnorm::dmvnorm(X2, mean = rep((1-exp(-2*2))*2, 4), sigma = V, log = TRUE),
-                 mvtnorm::dmvnorm(X2, mean = rep((1-exp(-2*2))*2, 4), sigma = V, log = TRUE)))
+                 mvtnorm::dmvnorm(X2, mean = rep((1-exp(-2*2))*2, 4), sigma = V, log = TRUE))
 })
 
 

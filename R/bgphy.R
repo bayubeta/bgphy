@@ -199,6 +199,7 @@ post_pred_check <- function(post, ...){
 
   N <- min(c(100, length(post$W)))
 
+  X <- attr(post, "X")
   Xrep <- attr(post, "Xppred")[1:N,]
 
   # ====================== plotting routines ======================
