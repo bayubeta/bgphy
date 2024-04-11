@@ -103,7 +103,7 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   class(res) <- "bgphy_posterior"
   attr(res, "model") <- model
   attr(res, "X") <- X
-  attr(res, "X") <- ppred$Xppred
+  attr(res, "Xppred") <- ppred$Xppred
 
   return(res)
 }
@@ -167,7 +167,7 @@ print.bgphy_posterior <- function(x, ...){
 #' Plots a number of density curves drawn from the posterior predictive distribution and the data density curve.
 #'
 #' @param post An object of class \code{bgphy_posterior}.
-#' @param nsim Number of simulations, or draws from the posterior predictive distribution.
+#' @param ... Other arguments to be passed on to the `plot` function.
 #'
 #' @examples
 #' \dontrun{
@@ -190,36 +190,16 @@ print.bgphy_posterior <- function(x, ...){
 #' }
 #'
 #' @export
-post_pred_check <- function(post, nsim = 100){
+post_pred_check <- function(post, ...){
   # check if input is of class bgphy_posterior
   stopifnot("Object is not of class bgphy_posterior." = class(post) == "bgphy_posterior")
-  # check if nsample is valid
-  stopifnot("Invalid value of nsim." = is.numeric(nsim) & ((abs(nsim - round(nsim)) < .Machine$double.eps^0.5)) & (nsim > 0))
 
-  N <- length(post$W)
+  # since bgphy_posterior contains posterior predictive samples,
+  # just pick the first min(100, nsamples)
 
-  # retrieve model
-  model <- attr(post, "model")
+  N <- min(c(100, length(post$W)))
 
-  # retrieve data
-  X <- attr(post, "X")
-
-  # number of tips of the tree
-  ntips <- ape::Ntip(model$tree)
-
-  # sample according to weights
-  post_par <- post$Q[sample(1:N, nsim, prob = post$W, replace = TRUE),]
-
-  # empty matrix for storing Xrep (posterior predictive values)
-  Xrep <- matrix(nrow = nsim, ncol = ncol(X))
-
-  for (i in 1:nsim){
-    # assign posterior params to model
-    post_model <- setParams(post_par[i,], model$model)
-
-    # simulate data using PCMBase, take only the tips
-    Xrep[i,] <- PCMBase::PCMSim(model$tree, post_model, post_model$X0)[,1:ntips]
-  }
+  Xrep <- attr(post, "Xppred")[1:N,]
 
   # ====================== plotting routines ======================
   # calculate maximum range for y
@@ -227,14 +207,13 @@ post_pred_check <- function(post, nsim = 100){
 
 
   # base
-  mar <- graphics::par(mar = c(3, 1, 1, 1))
-  on.exit(par(mar))
-  plot(stats::density(X[1,]), main = "", xlab = "", ylab = "", yaxt = "n",
-       col = grDevices::rgb(0,0,0,0), ylim = c(0, 1.1*max_y))
+  plot(stats::density(X[1,]), main = "",
+       xlab = "Data at the tips", ylab = "Density", yaxt = "n",
+       col = grDevices::rgb(0,0,0,0), ylim = c(0, 1.1*max_y), ...)
   graphics::grid()
 
   # posterior predictive densities
-  for (i in 1:nsim){
+  for (i in 1:N){
     graphics::lines(stats::density(Xrep[i,]), col = grDevices::rgb(0.2,0.2,1,0.07))
   }
 
@@ -243,7 +222,7 @@ post_pred_check <- function(post, nsim = 100){
 
   graphics::legend("topleft", legend = c("Data", "Simulated data"),
                    col = c(grDevices::rgb(0,0,0.5,1), grDevices::rgb(0.2,0.2,1,0.5)),
-                   lty = c(1,1), lwd = c(2,1), seg.len = .75,
+                   lty = c(1,1), lwd = c(2,2), seg.len = .75,
                    bty = "n")
 
 }
