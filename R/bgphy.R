@@ -63,9 +63,10 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   stopifnot("Invalid value of parallel" = is.logical(parallel))
 
 
-  # ---------------------------- start inference ----------------------------
+  # ---------------------------- start inference -------------------------------
   # run inference using importance sampling
   res <- IS(model = model, X = X, nsample = nsample, scale = scale, parallel = parallel)
+  # ----------------------------------------------------------------------------
 
   # matrix of normalized weights
   MW <- matrix(rep(res$W, dim(res$Q)[2]), ncol = dim(res$Q)[2])
@@ -83,21 +84,25 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   var_hat <- colSums(res$Q^2 * MW) - (res$mean)^2
   res$std <- stats::setNames(sqrt(var_hat), names(res$mean))
 
-  # matrix of quantiles
+  # matrix of marginal quantiles
   Mq <- est_quantiles(res$Q, res$W)
   rownames(Mq) <- names(res$mean)
   res$quantiles <- Mq
 
   # calculate posterior predictive loss
-  res$loss <- ppred_loss(res, X, model)
+  ppred <- ppred_loss(res, X, model)
+  res$loss <- ppred$loss
+
+  # calculate ESS
+  res$ESS <- 1/sum(res$W^2)
 
   # change order of the list
-  res <- res[c("mean", "std_error", "std", "quantiles", "loss", "Q", "W")]
-
+  res <- res[c("mean", "std_error", "std", "quantiles", "loss", "ESS", "Q", "W")]
 
   class(res) <- "bgphy_posterior"
   attr(res, "model") <- model
   attr(res, "X") <- X
+  attr(res, "X") <- ppred$Xppred
 
   return(res)
 }
@@ -148,7 +153,9 @@ print.bgphy_posterior <- function(x, ...){
 
   cat("\n")
 
-  cat(paste0("WAIC: ", x$WAIC, "\n"))
+  cat(paste0("Posterior predictive loss: ", round(x$loss, 5), "\n"))
+
+  cat(paste0("ESS: ", round(x$ESS, 5), "\n"))
 }
 
 
