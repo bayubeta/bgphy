@@ -25,10 +25,11 @@ A list of class \code{mgpm_posterior} which contains:
 \item \code{mean}:   Expected value of the posterior distribution.
 \item \code{std_error}:   Estimated standard error of the posterior mean.
 \item \code{std}:   Estimated standard deviation of the posterior distribution.
-\item \code{quantiles}:  Estimated quantiles.
-\item \code{Q}:   Drawn values from the proposal distribution (Multivariate Normal).
+\item \code{quantiles}:  Estimated quantiles of marginal posterior distribution.
+\item \code{Q}:   Drawn values from the proposal distribution (multivariate Normal).
 \item \code{W}:   Normalized weights for each row of \code{Q}.
-\item \code{WAIC}:   Widely Available Criterion Score.
+\item \code{loss}:   Estimated posterior predictive loss.
+\item \code{ESS}:   Estimated effective sample size.
 }
 }
 \description{

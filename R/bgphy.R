@@ -14,10 +14,11 @@
 #' * `mean`:   Expected value of the posterior distribution.
 #' * `std_error`:   Estimated standard error of the posterior mean.
 #' * `std`:   Estimated standard deviation of the posterior distribution.
-#' * `quantiles`:  Estimated quantiles.
-#' * `Q`:   Drawn values from the proposal distribution (Multivariate Normal).
+#' * `quantiles`:  Estimated quantiles of marginal posterior distribution.
+#' * `Q`:   Drawn values from the proposal distribution (multivariate Normal).
 #' * `W`:   Normalized weights for each row of `Q`.
-#' * `WAIC`:   Widely Available Criterion Score.
+#' * `loss`:   Estimated posterior predictive loss.
+#' * `ESS`:   Estimated effective sample size.
 #'
 #' @examples
 #' \dontrun{
