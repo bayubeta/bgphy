@@ -1,6 +1,6 @@
 # ------------------------- Inference functions -------------------------
 # function to run the Importance Sampling method
-IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
+IS <- function(model, X, nsample, scale, parallel = TRUE){
   #================ Laplace approximation + Importance sampling ================
 
   # number of parameters
@@ -47,7 +47,7 @@ IS <- function(model, X, nsample, scale = 1, parallel = TRUE){
 
 
   # ================== begin the (self-normalized) Importance sampling routine
-  # sample from the normal distribution
+  # sample from the mixture of normal distribution
   q <- mvtnorm::rmvnorm(nsample, mean = post_mode, sigma = appr_cov)
 
   if (parallel){
