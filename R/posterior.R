@@ -214,7 +214,7 @@ lupost <- function(p, model, X, tree, priors_tr, tr){
 
   # if infinite, return a very low value
   if (is.infinite(sum_log) || is.na(sum_log)){
-    return(c(-1e20, -1e20))
+    return(-1e20)
   }
 
   # return log unnormalized posterior
