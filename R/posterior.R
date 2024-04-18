@@ -72,10 +72,63 @@ IS <- function(model, X, nsample, scale, parallel = TRUE){
   }
 
   logW <- logp - logq # log of weights
-  W <- exp(logW) # weights
+  # W <- exp(logW) # weights
 
   logWst <- logW - logsumexp(logW) # log of normalized weights
   Wst <- exp(logWst) # normalized weights
+
+
+
+  # ------------------------ second pass ------------------------
+
+
+
+  # resample (with replacement) using SIR, use normalized weights as the prob.
+  new_idx <- sample(1:nsample, nsample, prob = Wst, replace = TRUE)
+
+  # newly resampled particles
+  q_new <- q[new_idx,]
+
+  # ======== Sample from a MVN, where the marginal means are q_new
+  # covariance of the perturbation
+  S_p <- diag(apply(q_new, 2, var))
+
+  # perturbations
+  e <- mvtnorm::rmvnorm(nsample, mean = rep(0,d), sigma = S_p/nsample)
+  q <- q_new + e
+
+
+
+  if (parallel){
+    cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
+    parallel::clusterExport(cl,
+                            varlist = c("PCMloglik", "setParams", "loadParams", "q_new", "q", "S_p"),
+                            envir = environment())
+
+    # log-unnormalized posterior
+    logp <- t(parallel::parApply(cl, q, 1, lupost,
+                                 model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
+    logp <- as.vector(logp) # convert to vector
+
+    # log proposal
+    logq <- parallel::parSapply(cl, 1:nsample, function(i){mvtnorm::dmvnorm(q[i,], mean = q_new[i,], sigma = S_p, log = TRUE)})
+
+    on.exit(parallel::stopCluster(cl))
+
+  }else{
+    # log-unnormalized posterior
+    logp <- t(apply(q, 1, lupost, model$model, X, model$tree, priors_tr, tr)) # log-unnormalized posterior & likelihood
+    logp <- as.vector(logp) # convert to vector
+    logq <- sapply(1:nsample, function(i){mvtnorm::dmvnorm(q[i,], mean = q_new[i,], sigma = S_p, log = TRUE)}) # log density of normal
+  }
+
+
+  logW <- logp - logq # log of weights
+  # W <- exp(logW) # weights
+
+  logWst <- logW - logsumexp(logW) # log of normalized weights
+  Wst <- exp(logWst) # normalized weights
+
 
   Q <- t(apply(q, 1, tr$g)) # proposed values on the original space
 
