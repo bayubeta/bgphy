@@ -24,6 +24,9 @@ modeleval.R
 #modeleval plot
 me_plot.R
 
+# maximum likelihood
+ML_ex.R
+
 
 # Output files from R CMD build
 /*.tar.gz
