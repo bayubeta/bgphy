@@ -79,7 +79,7 @@ IS <- function(model, X, nsample, scale, parallel = TRUE){
 
 
 
-  # ------------------------ second pass ------------------------
+  # ------------------------------------------------ second pass ------------------------------------------------
 
 
 
@@ -212,14 +212,14 @@ setParams <- function(p, model){
   # p := c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr, Sigmae_x)
   # Load parameters into the model
 
-  # # create an empty vector of the size of total parameters count
-  # v <- numeric(attr(model, "p"))
-  #
-  # # fill everything except the last with p
-  # v[-length(v)] <- p
+  # create an empty vector of the size of total parameters count
+  v <- numeric(attr(model, "p"))
 
-  # load p into the model
-  model <- loadParams(model, p)
+  # fill everything except the last with p
+  v <- p
+
+  # load v into the model
+  model <- loadParams(model, v)
 
   return(model)
 }
