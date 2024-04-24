@@ -67,7 +67,14 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
   if (r == 1){
     # Global model
     # Define the model in PCMBase
-    PCMmodel <- PCMBase::PCM(model = modeltypes, regimes = regime_names)
+    if (modeltypes == "BM"){
+      PCMmodel <- PCMBase::PCM(model = "BM__Global_X0__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x",
+                               regimes = regime_names)
+    } else if(modeltypes == "OU"){
+      PCMmodel <- PCMBase::PCM(model = "OU__Global_X0__Schur_WithNonNegativeDiagonal_Transformable_H__Theta__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x",
+                               regimes = regime_names)
+    }
+
 
     # Convert the tree into PCMTree object. Since only 1 regime, set from the earliest node.
     tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
@@ -83,7 +90,10 @@ setModel <- function(tree, regime_names, modeltypes, startNodes = NULL){
                            "OU__Omitted_X0__H__Theta__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x")
 
     # Create the PCM object
-    PCMmodel <- PCMBase::MixedGaussian(k = 1, modelTypes = modelStrings, mapping = stats::setNames(1:r, regime_names))
+    PCMmodel <- PCMBase::MixedGaussian(k = 1, modelTypes = modelStrings, mapping = stats::setNames(1:r, regime_names),
+                                       Sigmae_x = structure(0,
+                                         class = c("MatrixParameter", "_Omitted"),
+                                         description = "upper triangular factor of the non-phylogenetic variance-covariance"))
 
     # update the tree with the regimes information
     tree <- PCMBase::PCMTreeSetPartRegimes(PCMBase::PCMTree(tree),
