@@ -212,14 +212,14 @@ setParams <- function(p, model){
   # p := c(X0, H1, Theta1, Sigma_x1, ..., Hr, Thetar, Sigma_xr, Sigmae_x)
   # Load parameters into the model
 
-  # create an empty vector of the size of total parameters count
-  v <- numeric(attr(model, "p"))
+  # # create an empty vector of the size of total parameters count
+  # v <- numeric(attr(model, "p"))
+  #
+  # # fill everything except the last with p
+  # v[-length(v)] <- p
 
-  # fill everything except the last with p
-  v[-length(v)] <- p
-
-  # load v into the model
-  model <- loadParams(model, v)
+  # load p into the model
+  model <- loadParams(model, p)
 
   return(model)
 }
