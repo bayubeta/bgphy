@@ -1,6 +1,6 @@
 # ------------------------- Inference functions -------------------------
 # function to run the Importance Sampling method
-IS <- function(model, X, nsample, scale, parallel = TRUE){
+IS <- function(model, X, nsample, parallel = TRUE){
   #================ Laplace approximation + Importance sampling ================
 
   # number of parameters
@@ -36,8 +36,8 @@ IS <- function(model, X, nsample, scale, parallel = TRUE){
                            control = list(fnscale=-1), hessian = TRUE)
     # posterior mode (log space)
     post_mode <- optRes$par
-    # approximated covariance, scale to focus on the important area around mode
-    appr_cov <- try(solve(-optRes$hessian)*scale + diag(d)*1e-8, silent = TRUE) # add diagonal jitters for numerical stability
+    # approximated covariance
+    appr_cov <- try(solve(-optRes$hessian) + diag(d)*1e-8, silent = TRUE) # add diagonal jitters for numerical stability
 
     # check if appr_cov is already positive definite
     if (all(eigen(appr_cov)$values >= 1e-13) & all(class(appr_cov) != "try-error")){

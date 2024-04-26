@@ -15,14 +15,6 @@ test_that("bgphy() throws an error for invalid inputs", {
   expect_error(bgphy(OU1, matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU))),
                      nsample = 1.4))
 
-  # valid value for scale
-  expect_error(bgphy(OU1, matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU))),
-                     scale = 0))
-  expect_error(bgphy(OU1, matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU))),
-                     scale = -1))
-  expect_error(bgphy(OU1, matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU))),
-                     scale = "asdf"))
-
   # valid value for parallel
   expect_error(bgphy(OU1, matrix(XOU[1,], nrow = 1, dimnames = list(NULL, colnames(XOU))),
                      parallel = "TRUE"))

@@ -6,8 +6,6 @@
 #' @param X Measurements on tips. \code{X} needs to be a matrix of dimension \code{(1 x N)}, where \code{N} is the number of tips on the tree in \code{model$tree}.
 #'   The column names of \code{X} needs to match the names on the tips.
 #' @param nsample Number of random draws to be made.
-#' @param scale The scale parameter to determine the scale of the approximated covariance matrix
-#'   obtained from the Laplace's approximation of the posterior distribution. The default is 1.
 #' @param parallel Utilization of parallel processing. Defaults to \code{TRUE}.
 #'
 #' @return A list of class \code{mgpm_posterior} which contains:
@@ -39,7 +37,7 @@
 #' }
 #'
 #' @export
-bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
+bgphy <- function(model, X, nsample = 10000, parallel = TRUE){
 
   # ------------------------- perform checks on inputs -------------------------
   parnames <- getParamNames(model)
@@ -58,15 +56,13 @@ bgphy <- function(model, X, nsample = 10000, scale = 1, parallel = TRUE){
   stopifnot("Names on the tips do not match column names of X." = all(colnames(X) == model$tree$tip.label))
   # make sure nsample integer > 0
   stopifnot("Invalid value of nsample." = is.numeric(nsample) & ((abs(nsample - round(nsample)) < .Machine$double.eps^0.5)) & (nsample > 0))
-  # make sure scale > 0
-  stopifnot("Invalid value of scale" = is.numeric(scale) & (scale > 0))
   # make sure parallel is boolean
   stopifnot("Invalid value of parallel" = is.logical(parallel))
 
 
   # ---------------------------- start inference -------------------------------
   # run inference using importance sampling
-  res <- IS(model = model, X = X, nsample = nsample, scale = scale, parallel = parallel)
+  res <- IS(model = model, X = X, nsample = nsample, parallel = parallel)
   # ----------------------------------------------------------------------------
 
   # matrix of normalized weights
