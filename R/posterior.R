@@ -61,7 +61,7 @@ IS <- function(model, X, nsample, scale, parallel = TRUE){
     # log proposal
     logq <- parallel::parApply(cl, q, 1, mvtnorm::dmvnorm,
                                mean = post_mode, sigma = appr_cov, log = TRUE) # log density of normal
-    on.exit(parallel::stopCluster(cl))
+    parallel::stopCluster(cl)
 
   }else{
     # log-unnormalized posterior
@@ -113,7 +113,7 @@ IS <- function(model, X, nsample, scale, parallel = TRUE){
     # log proposal
     logq <- parallel::parSapply(cl, 1:nsample, function(i){mvtnorm::dmvnorm(q[i,], mean = q_new[i,], sigma = S_p, log = TRUE)})
 
-    on.exit(parallel::stopCluster(cl))
+    parallel::stopCluster(cl)
 
   }else{
     # log-unnormalized posterior
