@@ -4,7 +4,7 @@
 \alias{bgphy}
 \title{Bayesian inference of mixed Gaussian phylogenetic models.}
 \usage{
-bgphy(model, X, nsample = 10000, scale = 1, parallel = TRUE)
+bgphy(model, X, nsample = 10000, parallel = TRUE)
 }
 \arguments{
 \item{model}{An object of class \code{bgphy_model}, which is created by \code{\link[=setModel]{setModel()}} function.}
@@ -13,9 +13,6 @@ bgphy(model, X, nsample = 10000, scale = 1, parallel = TRUE)
 The column names of \code{X} needs to match the names on the tips.}
 
 \item{nsample}{Number of random draws to be made.}
-
-\item{scale}{The scale parameter to determine the scale of the approximated covariance matrix
-obtained from the Laplace's approximation of the posterior distribution. The default is 1.}
 
 \item{parallel}{Utilization of parallel processing. Defaults to \code{TRUE}.}
 }
@@ -26,7 +23,7 @@ A list of class \code{mgpm_posterior} which contains:
 \item \code{std_error}:   Estimated standard error of the posterior mean.
 \item \code{std}:   Estimated standard deviation of the posterior distribution.
 \item \code{quantiles}:  Estimated quantiles of marginal posterior distribution.
-\item \code{Q}:   Drawn values from the proposal distribution (multivariate Normal).
+\item \code{Q}:   Drawn values from the proposal distribution.
 \item \code{W}:   Normalized weights for each row of \code{Q}.
 \item \code{loss}:   Estimated posterior predictive loss.
 \item \code{ESS}:   Estimated effective sample size.

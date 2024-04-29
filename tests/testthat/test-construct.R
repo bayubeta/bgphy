@@ -5,7 +5,7 @@ test_that("Model is correctly constructed", {
                                 modeltypes = "OU"))
   # test the model
   expect_s3_class(OU1$model, "OU")
-  expect_contains(names(OU1$model), c("X0", "H", "Theta", "Sigma_x", "Sigmae_x"))
+  expect_contains(names(OU1$model), c("X0", "H", "Theta", "Sigma_x"))
   # test the tree
   expect_s3_class(OU1$tree, "PCMTree")
   expect_named(OU1$tree$part.regime, "101")

@@ -47,11 +47,11 @@ test_that("likelihood and posterior works", {
                                               collapse = ","), ");"))
   set.seed(1234, kind = "L'Ecuyer-CMRG"); X <- rnorm(100, 0, sqrt(8))
   # BM model
-  BM2 <- setParams(c(0,2), PCMBase::PCM("BM"))
+  BM2 <- setParams(c(0,2), PCMBase::PCM("BM__Global_X0__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x"))
   expect_equal(PCMloglik(matrix(X, nrow = 1, dimnames = list(NULL, mytr$tip.label)), mytr, BM2, p = c(0,2)),
                sum(stats::dnorm(X, 0, sqrt(8), log = TRUE)))
   # OU model
-  OU2 <- setParams(c(0,2,2,2), PCMBase::PCM("OU"))
+  OU2 <- setParams(c(0,2,2,2), PCMBase::PCM("OU__Global_X0__Schur_WithNonNegativeDiagonal_Transformable_H__Theta__UpperTriangularWithDiagonal_WithNonNegativeDiagonal_Sigma_x__Omitted_Sigmae_x"))
   expect_equal(PCMloglik(matrix(X, nrow = 1, dimnames = list(NULL, mytr$tip.label)), mytr, OU2, p = c(0,2,2,2)),
                sum(stats::dnorm(X, (1-exp(-2*2))*2, sqrt(1-exp(-2*2*2)), log = TRUE)))
 

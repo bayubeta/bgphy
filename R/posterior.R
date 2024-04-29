@@ -91,7 +91,7 @@ IS <- function(model, X, nsample, parallel = TRUE){
 
   # ======== Sample from a MVN, where the marginal means are q_new
   # covariance of the perturbation
-  S_p <- diag(apply(q_new, 2, var))
+  S_p <- diag(apply(q_new, 2, stats::var))
 
   # perturbations
   e <- mvtnorm::rmvnorm(nsample, mean = rep(0,d), sigma = S_p/nsample)

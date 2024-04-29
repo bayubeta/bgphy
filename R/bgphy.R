@@ -13,7 +13,7 @@
 #' * `std_error`:   Estimated standard error of the posterior mean.
 #' * `std`:   Estimated standard deviation of the posterior distribution.
 #' * `quantiles`:  Estimated quantiles of marginal posterior distribution.
-#' * `Q`:   Drawn values from the proposal distribution (multivariate Normal).
+#' * `Q`:   Drawn values from the proposal distribution.
 #' * `W`:   Normalized weights for each row of `Q`.
 #' * `loss`:   Estimated posterior predictive loss.
 #' * `ESS`:   Estimated effective sample size.
@@ -45,7 +45,7 @@ bgphy <- function(model, X, nsample = 10000, parallel = TRUE){
   # check if all priors are of class priorpdf
   stopifnot("Priors are not of class priorpdf." = all(priors_class == "priorpdf"))
   # check if there is a prior for each parameter
-  # stopifnot("Priors are not defined for all parameters." = length(parnames) == length(priors_class))
+  stopifnot("Priors are not defined for all parameters." = length(parnames) == length(priors_class))
   # check if X is a numeric matrix
   stopifnot("X is not a numeric matrix." = is.numeric(X) & is.matrix(X))
   # check if X has the correct dimension
