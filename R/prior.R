@@ -84,7 +84,6 @@ print.bgphy_priors <- function(x, ...){
   for (par in parnames){
     cat(paste0(par))
     print(x[[par]], ...)
-    cat("\n")
   }
 }
 
@@ -265,6 +264,7 @@ print.priorpdf <- function(x, ...){
       cat(")")
     }
   }
+  cat("\n")
 }
 
 
