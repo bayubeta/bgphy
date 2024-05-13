@@ -174,7 +174,8 @@ ppred_loss <- function(P, X, model){
   # model: bgphy_model class
 
   # simulate from the posterior predictive function
-  ntips <- dim(X)[2]
+
+  ntips <- dim(X)[2] # number of tips
 
   # sample from posterior
   S <- length(P$W) # number of samples
@@ -187,11 +188,18 @@ ppred_loss <- function(P, X, model){
   }
 
   Xppred <- matrix(nrow = S, ncol = ncol(X))
+
+  # set the random seed, if not set already
+  if (!exists(".Random.seed", where = .GlobalEnv)){
+    set.seed(1, kind = "L'Ecuyer-CMRG")
+  }
+
   cl <- parallel::makeCluster(parallel::detectCores(),"PSOCK")
+  on.exit(parallel::stopCluster(cl))
+  parallel::clusterSetRNGStream(cl, .GlobalEnv$.Random.seed) # use the random seed for parallel
   parallel::clusterExport(cl, varlist = c("PCMloglik", "setParams", "loadParams",
                                           "model", "X", "ntips"), envir = environment())
   Xppred <- t(parallel::parApply(cl, post_samples, 1, PCMsimulate))
-  on.exit(parallel::stopCluster(cl))
 
   # return a list of loss score and the posterior predictive samples
   loss <- sum((X - colMeans(Xppred))^2) + sum(diag(stats::cov(Xppred)))
