@@ -1,5 +1,5 @@
 # bgphy
- Bayesian Analysis of Mixed Gaussian Phylogenetic Models. 
+ Bayesian Inference of Mixed Gaussian Phylogenetic Models. 
 
 ## Installation
 ```
