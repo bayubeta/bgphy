@@ -9,3 +9,4 @@
 ^vignettes/bgphy_tutorial\.qmd$
 ^vignettes/bgphy_tutorial\.bib$
 ^ML_ex\.R$
+^\.github$
