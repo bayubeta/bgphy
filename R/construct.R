@@ -230,7 +230,7 @@ plot_regimes <- function(tree, cols = NULL, ...){
 
   ape::plot.phylo(tree, edge.col = edge.col, ...)
   # add legend
-  graphics::legend("right", legend = ur, col = col, lty = rep(1, length(ur)),
+  graphics::legend("right", legend = ur, col = cols[1:length(ur)], lty = rep(1, length(ur)),
                    lwd = 2, bty = "n")
 }
 
