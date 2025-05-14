@@ -9,7 +9,7 @@ devtools::install_github("bayubeta/bgphy", build_vignettes = TRUE)
 ```
 
 ## Quickstart
-(see `vignettes/bgphy_tutorial.pdf` for more information)
+(see [`vignettes/bgphy_tutorial.pdf`](https://github.com/bayubeta/bgphy/blob/main/vignettes/bgphy_tutorial.pdf) for more information)
 
 Loading the package:
 ```
